@@ -1,0 +1,189 @@
+{
+  "schema_version": 1,
+  "scope": "phase2-day1",
+  "description": "OMC-style in-session method map to omc-copilot day-one commands and runtime functions.",
+  "methods": [
+    {
+      "method": "omc.setup",
+      "target": {
+        "type": "command",
+        "name": "omc-copilot setup"
+      },
+      "runtime": {
+        "command": "omc-copilot setup --target <path>",
+        "function": "omc_copilot.cli.commands.setup.run_setup",
+        "backend": "omc_copilot.installer.setup_wizard.SetupWizard.run"
+      },
+      "status": "implemented",
+      "notes": "Installs AGENTS/instructions + hook manifest into target repository."
+    },
+    {
+      "method": "omc.ask",
+      "target": {
+        "type": "command",
+        "name": "omc-copilot ask"
+      },
+      "runtime": {
+        "command": "omc-copilot ask <prompt>",
+        "function": "omc_copilot.cli.commands.ask.run_ask",
+        "backend": "omc_copilot.adapters.copilot_cli.CopilotRuntimeAdapter.generate"
+      },
+      "status": "implemented",
+      "notes": "Direct single-shot prompt passthrough to Copilot CLI runtime."
+    },
+    {
+      "method": "omc.team",
+      "target": {
+        "type": "command",
+        "name": "omc-copilot team"
+      },
+      "runtime": {
+        "command": "omc-copilot team <task> --max-iterations N",
+        "function": "omc_copilot.cli.commands.team.run_team",
+        "backend": "omc_copilot.orchestrator.team_pipeline.run_team_pipeline"
+      },
+      "status": "implemented",
+      "notes": "Dedicated team orchestration command with team-specific verify gate behavior."
+    },
+    {
+      "method": "omc.session.search",
+      "target": {
+        "type": "command",
+        "name": "omc-copilot session search"
+      },
+      "runtime": {
+        "command": "omc-copilot session search <query> --project-root <path>",
+        "function": "omc_copilot.cli.commands.session.run_session_search",
+        "backend": "reads .omc/state/omc-copilot-history.jsonl"
+      },
+      "status": "implemented",
+      "notes": "Searches persisted JSONL history lines, not semantic/vector session memory."
+    },
+    {
+      "method": "omc.doctor",
+      "target": {
+        "type": "command",
+        "name": "omc-copilot doctor"
+      },
+      "runtime": {
+        "command": "omc-copilot doctor --project-root <path>",
+        "function": "omc_copilot.cli.commands.doctor.run_doctor",
+        "backend": "filesystem + PATH checks"
+      },
+      "status": "implemented",
+      "notes": "Checks copilot binary availability and required instruction files."
+    },
+    {
+      "method": "omc.hud",
+      "target": {
+        "type": "command",
+        "name": "omc-copilot hud"
+      },
+      "runtime": {
+        "command": "omc-copilot hud --project-root <path>",
+        "function": "omc_copilot.cli.commands.hud.run_hud",
+        "backend": "reads latest .omc/state/omc-copilot/*.json"
+      },
+      "status": "implemented",
+      "notes": "Displays latest task mode/status/iteration from persisted state."
+    },
+    {
+      "method": "omc.autopilot",
+      "target": {
+        "type": "command",
+        "name": "omc-copilot run --mode autopilot"
+      },
+      "runtime": {
+        "command": "omc-copilot run <task> [--mode autopilot]",
+        "function": "omc_copilot.cli.commands.run.run_task",
+        "backend": "omc_copilot.orchestrator.autopilot_loop.run_autopilot_loop"
+      },
+      "status": "implemented",
+      "notes": "Default mode for run; also selected by keyword router when no stronger match exists."
+    },
+    {
+      "method": "omc.ralph",
+      "target": {
+        "type": "command",
+        "name": "omc-copilot run --mode ralph"
+      },
+      "runtime": {
+        "command": "omc-copilot run <task> --mode ralph",
+        "function": "omc_copilot.cli.commands.run.run_task",
+        "backend": "omc_copilot.orchestrator.ralph_loop.run_ralph_loop"
+      },
+      "status": "partial",
+      "notes": "Pipeline exists, but no dedicated top-level `omc-copilot ralph` command alias yet."
+    },
+    {
+      "method": "omc.ultrawork",
+      "target": {
+        "type": "command",
+        "name": "omc-copilot run --mode ultrawork"
+      },
+      "runtime": {
+        "command": "omc-copilot run <task> --mode ultrawork",
+        "function": "omc_copilot.cli.commands.run.run_task",
+        "backend": "omc_copilot.orchestrator.ultrawork_loop.run_ultrawork_loop"
+      },
+      "status": "partial",
+      "notes": "Parallel loop is implemented; explicit OMC-style dedicated command/skill surface is not."
+    },
+    {
+      "method": "omc.ultraqa",
+      "target": {
+        "type": "command",
+        "name": "omc-copilot run --mode ultraqa"
+      },
+      "runtime": {
+        "command": "omc-copilot run <task> --mode ultraqa",
+        "function": "omc_copilot.cli.commands.run.run_task",
+        "backend": "omc_copilot.orchestrator.ultraqa_loop.run_ultraqa_loop"
+      },
+      "status": "partial",
+      "notes": "QA loop exists, but no dedicated top-level ultraqa command/skill exposure yet."
+    },
+    {
+      "method": "omc.deep-interview",
+      "target": {
+        "type": "command",
+        "name": "omc-copilot run --mode deep-interview"
+      },
+      "runtime": {
+        "command": "omc-copilot run <task> --mode deep-interview",
+        "function": "omc_copilot.compatibility.pipeline_registry.normalize_pipeline_name",
+        "backend": "alias deep-interview -> autopilot"
+      },
+      "status": "partial",
+      "notes": "Alias resolves to autopilot; dedicated deep-interview pipeline semantics are not distinct yet."
+    },
+    {
+      "method": "omc.ralplan",
+      "target": {
+        "type": "command",
+        "name": "omc-copilot run --mode ralplan"
+      },
+      "runtime": {
+        "command": "omc-copilot run <task> --mode ralplan",
+        "function": "omc_copilot.compatibility.pipeline_registry.normalize_pipeline_name",
+        "backend": "alias ralplan -> ralph"
+      },
+      "status": "partial",
+      "notes": "Alias resolves to ralph; no distinct ralplan planner pipeline yet."
+    },
+    {
+      "method": "omc.skills.invoke",
+      "target": {
+        "type": "skill",
+        "name": "(not yet surfaced in omc-copilot CLI)"
+      },
+      "runtime": {
+        "command": "N/A",
+        "function": "omc_copilot.compatibility.skill_loader.*",
+        "backend": "skill metadata loader only"
+      },
+      "status": "planned",
+      "notes": "Day-one has skill metadata parsing but no session-level skill invocation command wiring."
+    }
+  ]
+}

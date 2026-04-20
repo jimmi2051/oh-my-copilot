@@ -1,0 +1,137 @@
+{
+  "version": 1,
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "type": "command",
+        "bash": "cat >/dev/null; exit 0",
+        "powershell": "$input | Out-Null; exit 0",
+        "timeoutSec": 5,
+        "env": {
+          "OMC_COMPAT_PROFILE": "phase2-day1",
+          "OMC_COMPAT_NOTE": "Pass-through hook: preserve runtime parity without blocking prompts."
+        }
+      }
+    ],
+    "SessionStart": [
+      {
+        "type": "command",
+        "bash": "cat >/dev/null; exit 0",
+        "powershell": "$input | Out-Null; exit 0",
+        "timeoutSec": 5,
+        "env": {
+          "OMC_COMPAT_PROFILE": "phase2-day1",
+          "OMC_COMPAT_NOTE": "Session lifecycle wiring for plugin compatibility."
+        }
+      }
+    ],
+    "PreToolUse": [
+      {
+        "type": "command",
+        "bash": "cat >/dev/null; exit 0",
+        "powershell": "$input | Out-Null; exit 0",
+        "timeoutSec": 5,
+        "env": {
+          "OMC_COMPAT_PROFILE": "phase2-day1",
+          "OMC_COMPAT_NOTE": "Tool lifecycle wiring remains non-blocking by default."
+        }
+      }
+    ],
+    "PermissionRequest": [
+      {
+        "type": "command",
+        "bash": "cat >/dev/null; exit 0",
+        "powershell": "$input | Out-Null; exit 0",
+        "timeoutSec": 5,
+        "env": {
+          "OMC_COMPAT_PROFILE": "phase2-day1",
+          "OMC_COMPAT_NOTE": "Permission flow is delegated to standard Copilot policy behavior."
+        }
+      }
+    ],
+    "PostToolUse": [
+      {
+        "type": "command",
+        "bash": "cat >/dev/null; exit 0",
+        "powershell": "$input | Out-Null; exit 0",
+        "timeoutSec": 5,
+        "env": {
+          "OMC_COMPAT_PROFILE": "phase2-day1",
+          "OMC_COMPAT_NOTE": "Post-tool success events are wired for observability parity."
+        }
+      }
+    ],
+    "PostToolUseFailure": [
+      {
+        "type": "command",
+        "bash": "cat >/dev/null; printf '%s' '{\"additionalContext\":\"omc-copilot day-one compatibility mode is active. Use omc-copilot doctor for environment checks and omc-copilot run --mode ultraqa for remediation loops.\"}'; exit 0",
+        "powershell": "$input | Out-Null; Write-Output '{\"additionalContext\":\"omc-copilot day-one compatibility mode is active. Use omc-copilot doctor for environment checks and omc-copilot run --mode ultraqa for remediation loops.\"}'; exit 0",
+        "timeoutSec": 5,
+        "env": {
+          "OMC_COMPAT_PROFILE": "phase2-day1",
+          "OMC_COMPAT_NOTE": "Failure hook adds remediation guidance while keeping command flow stable."
+        }
+      }
+    ],
+    "SubagentStart": [
+      {
+        "type": "command",
+        "bash": "cat >/dev/null; exit 0",
+        "powershell": "$input | Out-Null; exit 0",
+        "timeoutSec": 5,
+        "env": {
+          "OMC_COMPAT_PROFILE": "phase2-day1",
+          "OMC_COMPAT_NOTE": "Subagent lifecycle start is wired for OMC pipeline visibility."
+        }
+      }
+    ],
+    "SubagentStop": [
+      {
+        "type": "command",
+        "bash": "cat >/dev/null; exit 0",
+        "powershell": "$input | Out-Null; exit 0",
+        "timeoutSec": 5,
+        "env": {
+          "OMC_COMPAT_PROFILE": "phase2-day1",
+          "OMC_COMPAT_NOTE": "Subagent lifecycle stop is wired for OMC pipeline visibility."
+        }
+      }
+    ],
+    "PreCompact": [
+      {
+        "type": "command",
+        "bash": "cat >/dev/null; exit 0",
+        "powershell": "$input | Out-Null; exit 0",
+        "timeoutSec": 5,
+        "env": {
+          "OMC_COMPAT_PROFILE": "phase2-day1",
+          "OMC_COMPAT_NOTE": "Compaction hook is wired to preserve deterministic runtime cadence."
+        }
+      }
+    ],
+    "Stop": [
+      {
+        "type": "command",
+        "bash": "cat >/dev/null; exit 0",
+        "powershell": "$input | Out-Null; exit 0",
+        "timeoutSec": 5,
+        "env": {
+          "OMC_COMPAT_PROFILE": "phase2-day1",
+          "OMC_COMPAT_NOTE": "Agent stop hook is mapped through Stop for VS Code compatible payloads."
+        }
+      }
+    ],
+    "SessionEnd": [
+      {
+        "type": "command",
+        "bash": "cat >/dev/null; exit 0",
+        "powershell": "$input | Out-Null; exit 0",
+        "timeoutSec": 5,
+        "env": {
+          "OMC_COMPAT_PROFILE": "phase2-day1",
+          "OMC_COMPAT_NOTE": "Session termination hook is wired for lifecycle parity."
+        }
+      }
+    ]
+  }
+}

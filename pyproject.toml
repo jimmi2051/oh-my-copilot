@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "omc-copilot"
+version = "0.1.0"
+description = "OMC-style multi-agent orchestration framework powered by GitHub Copilot CLI."
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+authors = [{ name = "oh-my-copilot" }]
+dependencies = []
+
+[project.scripts]
+omc-copilot = "omc_copilot.cli.main:main"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+include = ["omc_copilot*"]
+exclude = ["tests*"]
+
+[tool.setuptools.package-data]
+omc_copilot = [
+  "templates/*",
+  "templates/instructions/*",
+]

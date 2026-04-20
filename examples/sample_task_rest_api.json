@@ -1,0 +1,5 @@
+{
+  "task": "build a REST API in FastAPI for task management with CRUD endpoints and tests",
+  "mode": "autopilot",
+  "max_iterations": 6
+}

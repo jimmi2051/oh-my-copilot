@@ -1,0 +1,16 @@
+{
+  "name": "omc-copilot",
+  "events": [
+    "UserPromptSubmit",
+    "SessionStart",
+    "PreToolUse",
+    "PermissionRequest",
+    "PostToolUse",
+    "PostToolUseFailure",
+    "SubagentStart",
+    "SubagentStop",
+    "PreCompact",
+    "Stop",
+    "SessionEnd"
+  ]
+}

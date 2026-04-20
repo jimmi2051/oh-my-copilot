@@ -1,0 +1,2 @@
+[console_scripts]
+omc-copilot = omc_copilot.cli.main:main

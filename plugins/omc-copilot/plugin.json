@@ -1,0 +1,30 @@
+{
+  "name": "omc-copilot",
+  "description": "OMC-style orchestration plugin for GitHub Copilot CLI with day-one compatibility skills and lifecycle hooks.",
+  "version": "0.1.0",
+  "author": {
+    "name": "oh-my-copilot",
+    "url": "https://github.com/oh-my-copilot/omc-copilot"
+  },
+  "homepage": "https://github.com/oh-my-copilot/omc-copilot",
+  "repository": "https://github.com/oh-my-copilot/omc-copilot",
+  "license": "MIT",
+  "keywords": [
+    "copilot-cli",
+    "plugin",
+    "orchestration",
+    "multi-agent",
+    "omc"
+  ],
+  "category": "developer-tools",
+  "tags": [
+    "autopilot",
+    "team",
+    "ralph",
+    "ultrawork",
+    "ultraqa"
+  ],
+  "agents": "agents",
+  "skills": "skills",
+  "hooks": "hooks.json"
+}
