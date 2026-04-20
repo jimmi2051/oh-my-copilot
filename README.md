@@ -165,7 +165,7 @@ copilot plugin marketplace remove <marketplace-name>
 Examples:
 
 ```bash
-copilot plugin marketplace add oh-my-copilot/omc-copilot
+copilot plugin marketplace add jimmi2051/oh-my-copilot
 copilot plugin marketplace add .
 copilot plugin marketplace list
 copilot plugin marketplace browse omc-copilot-marketplace
