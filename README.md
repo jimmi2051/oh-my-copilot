@@ -165,8 +165,13 @@ copilot plugin marketplace remove <marketplace-name>
 Examples:
 
 ```bash
+# remote marketplace (run anywhere)
 copilot plugin marketplace add jimmi2051/oh-my-copilot
+
+# local marketplace path (run only from a checkout of this repo)
+cd /path/to/oh-my-copilot
 copilot plugin marketplace add .
+
 copilot plugin marketplace list
 copilot plugin marketplace browse omc-copilot-marketplace
 ```
@@ -174,11 +179,36 @@ copilot plugin marketplace browse omc-copilot-marketplace
 ### Install / list / update / uninstall plugins
 
 ```bash
-copilot plugin install ./plugins/omc-copilot
+# install from marketplace (recommended for normal users)
 copilot plugin install omc-copilot@omc-copilot-marketplace
+
+# local path install (only when this repo is cloned locally)
+copilot plugin install ./plugins/omc-copilot
+
 copilot plugin list
 copilot plugin update omc-copilot
 copilot plugin uninstall omc-copilot
+```
+
+> Installing the Copilot plugin does **not** install the `omc-copilot` shell command.
+> The plugin gives in-session agents/skills/hooks for `copilot` sessions.
+
+## Install `omc-copilot` CLI binary
+
+If you want to run `omc-copilot ...` commands in your shell, install the Python package:
+
+```bash
+# from a local clone
+python -m pip install -e .
+
+# or directly from GitHub
+python -m pip install "git+https://github.com/jimmi2051/oh-my-copilot.git"
+```
+
+If your shell still cannot find `omc-copilot`, use:
+
+```bash
+python -m omc_copilot.cli.main --help
 ```
 
 ---
