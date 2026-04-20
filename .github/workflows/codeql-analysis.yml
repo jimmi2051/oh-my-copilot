@@ -8,6 +8,10 @@ on:
   schedule:
     - cron: '0 3 * * 2'
 
+permissions:
+  contents: read
+  security-events: write
+
 jobs:
   analyze:
     name: Analyze
@@ -17,7 +21,7 @@ jobs:
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v3
         with:
-          languages: python, javascript
+          languages: [ 'python' ]
       - name: Autobuild
         uses: github/codeql-action/autobuild@v3
       - name: Perform CodeQL Analysis
