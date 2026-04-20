@@ -14,9 +14,17 @@ class HookDispatcherTest(unittest.TestCase):
             "UserPromptSubmit": {"prompt": "  build api  "},
             "SessionStart": {},
             "PreToolUse": {"tool_name": "python"},
-            "PermissionRequest": {"tool_name": "bash", "reason": "write file", "requires_approval": False},
+            "PermissionRequest": {
+                "tool_name": "bash",
+                "reason": "write file",
+                "requires_approval": False,
+            },
             "PostToolUse": {"tool_name": "bash", "ok": "true"},
-            "PostToolUseFailure": {"tool_name": "bash", "error": "permission denied", "exit_code": "126"},
+            "PostToolUseFailure": {
+                "tool_name": "bash",
+                "error": "permission denied",
+                "exit_code": "126",
+            },
             "SubagentStart": {"agent_name": "python-expert", "task_id": "task-1"},
             "SubagentStop": {"agent_name": "python-expert", "outcome": "completed"},
             "PreCompact": {"reason": "token pressure", "messages_before": "42"},
@@ -35,17 +43,23 @@ class HookDispatcherTest(unittest.TestCase):
             self.assertEqual(session_start["project_root"], td)
             self.assertIn("timestamp", session_start)
 
-            user_prompt_submit = dispatcher.dispatch("UserPromptSubmit", prompt="  hello  ")
+            user_prompt_submit = dispatcher.dispatch(
+                "UserPromptSubmit", prompt="  hello  "
+            )
             self.assertEqual(user_prompt_submit["prompt"], "hello")
             self.assertEqual(user_prompt_submit["prompt_length"], 5)
 
-            permission_request = dispatcher.dispatch("PermissionRequest", requires_approval=False)
+            permission_request = dispatcher.dispatch(
+                "PermissionRequest", requires_approval=False
+            )
             self.assertEqual(permission_request["decision"], "auto-allow")
 
             post_tool_use = dispatcher.dispatch("PostToolUse", ok="true")
             self.assertTrue(post_tool_use["ok"])
 
-            post_tool_use_failure = dispatcher.dispatch("PostToolUseFailure", exit_code="126")
+            post_tool_use_failure = dispatcher.dispatch(
+                "PostToolUseFailure", exit_code="126"
+            )
             self.assertEqual(post_tool_use_failure["exit_code"], 126)
 
             pre_compact = dispatcher.dispatch("PreCompact", messages_before="4")

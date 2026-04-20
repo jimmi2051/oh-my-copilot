@@ -5,9 +5,11 @@ omc_copilot.egg-info/PKG-INFO
 omc_copilot.egg-info/SOURCES.txt
 omc_copilot.egg-info/dependency_links.txt
 omc_copilot.egg-info/entry_points.txt
+omc_copilot.egg-info/requires.txt
 omc_copilot.egg-info/top_level.txt
 omc_copilot/adapters/__init__.py
 omc_copilot/adapters/copilot_cli.py
+omc_copilot/adapters/js_bridge.py
 omc_copilot/adapters/runtime_base.py
 omc_copilot/agents/__init__.py
 omc_copilot/agents/architect.py
@@ -86,8 +88,11 @@ tests/test_autopilot_loop.py
 tests/test_doctor_command.py
 tests/test_hook_dispatcher.py
 tests/test_hook_installer.py
+tests/test_js_bridge.py
+tests/test_js_bridge_unit.py
 tests/test_merge_strategy.py
 tests/test_pipeline_parity.py
+tests/test_plugin_validation.py
 tests/test_setup_command.py
 tests/test_skill_loader.py
 tests/test_state_manager.py

@@ -158,8 +158,6 @@ Examples:
 copilot plugin marketplace add <owner/repo-or-local-path>
 copilot plugin marketplace list
 copilot plugin marketplace browse <marketplace-name>
-copilot plugin marketplace update [marketplace-name]
-copilot plugin marketplace remove <marketplace-name>
 ```
 
 Examples:
@@ -230,6 +228,47 @@ copilot plugin install ./plugins/omc-copilot
 omc-copilot setup --target .
 omc-copilot doctor --project-root .
 ```
+
+---
+
+## JS Interoperability Adapter
+
+A minimal Node.js interoperability adapter has been added under:
+
+- `omc_copilot/adapters/js_bridge.py` (Python wrapper)
+- `scripts/setup_node_adapter.sh` (helper to initialize a local npm environment)
+- `tests/test_js_bridge.py` (pytest integration test, skipped if Node.js is not installed)
+- `tests/test_js_bridge_unit.py` (mocked unit tests covering error paths)
+
+Quick start:
+
+1. Ensure Node.js (v16+) is installed and on your PATH, or install Docker for containerized execution.
+2. Run the helper to initialize a local npm project in the adapters folder (optional for development):
+
+```bash
+bash scripts/setup_node_adapter.sh
+```
+
+3. Example usage from Python:
+
+```python
+from omc_copilot.adapters.js_bridge import run_js_code
+# direct execution (requires node on PATH)
+res = run_js_code('console.log(JSON.stringify({ok:true, hello: "world"}));', timeout=5)
+
+# run inside a container for better isolation (requires docker)
+res = run_js_code('console.log(JSON.stringify({ok:true}));', use_docker=True, timeout=5)
+print(res)
+```
+
+Security note:
+
+WARNING: This adapter executes arbitrary JavaScript. Do NOT run untrusted code with the default (direct) execution mode. Prefer `use_docker=True` in untrusted environments — this runs the code in a network-disabled container with memory and CPU limits (Docker required). The container mode provides simple isolation but is not a full security boundary for hostile workloads. For stronger isolation use dedicated sandboxing, ephemeral VMs, or remote execution services.
+
+Notes:
+- The adapter is intentionally small: it runs Node.js processes and exchanges JSON via stdin/stdout.
+- The adapter performs a pre-check for required tools (node or docker) and raises JSBridgeError when they are missing.
+- Unit tests mock subprocess.run to cover error paths; an integration test runs when Node.js is available on PATH.
 
 ---
 

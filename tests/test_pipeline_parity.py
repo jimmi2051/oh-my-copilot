@@ -52,10 +52,14 @@ class _Executor:
     def __init__(self, fail_on_steps: set[str] | None = None) -> None:
         self.fail_on_steps = fail_on_steps or set()
 
-    def run(self, _context: AgentContext, step: TaskStep, _constraints: list[str]) -> ExecutorOutput:
+    def run(
+        self, _context: AgentContext, step: TaskStep, _constraints: list[str]
+    ) -> ExecutorOutput:
         if step.id in self.fail_on_steps:
             raise RuntimeError(f"{step.id} exploded")
-        return ExecutorOutput(step_id=step.id, result_text=f"done {step.id}", files_touched=[])
+        return ExecutorOutput(
+            step_id=step.id, result_text=f"done {step.id}", files_touched=[]
+        )
 
 
 class _Reviewer:
@@ -78,14 +82,18 @@ class _Tester:
         idx = min(self.calls, len(self.passed_per_call) - 1)
         self.calls += 1
         passed = self.passed_per_call[idx]
-        return TesterOutput(passed=passed, summary="passed" if passed else "failed", details="trace")
+        return TesterOutput(
+            passed=passed, summary="passed" if passed else "failed", details="trace"
+        )
 
 
 class _Fixer:
     def __init__(self) -> None:
         self.calls = 0
 
-    def run(self, _context: AgentContext, execution_text: str, _issues: list[ReviewerIssue]) -> FixerOutput:
+    def run(
+        self, _context: AgentContext, execution_text: str, _issues: list[ReviewerIssue]
+    ) -> FixerOutput:
         self.calls += 1
         return FixerOutput(
             patched_code=f"[patched-{self.calls}] {execution_text}",
@@ -126,11 +134,15 @@ class PipelineParityTest(unittest.TestCase):
 
         self.assertEqual(state.status.value, "failed")
         self.assertEqual(registry.tester.calls, 0)
-        self.assertEqual([h.phase for h in state.history], ["team-verify-review", "team-fix"])
+        self.assertEqual(
+            [h.phase for h in state.history], ["team-verify-review", "team-fix"]
+        )
 
     def test_ralph_retries_verification_within_single_iteration(self) -> None:
         registry = _Registry(reviewer_issues=[[], []], tester_results=[False, True])
-        state = run_ralph_loop(_context(), registry, max_iterations=1, max_verify_retries=2)
+        state = run_ralph_loop(
+            _context(), registry, max_iterations=1, max_verify_retries=2
+        )
 
         self.assertEqual(state.status.value, "complete")
         self.assertEqual(state.iteration, 1)
@@ -138,12 +150,19 @@ class PipelineParityTest(unittest.TestCase):
         self.assertIn("ralph-retry-fix", [h.phase for h in state.history])
 
     def test_ultrawork_captures_parallel_execution_failures(self) -> None:
-        registry = _Registry(reviewer_issues=[[]], tester_results=[True], executor_failures={"step-2"})
+        registry = _Registry(
+            reviewer_issues=[[]], tester_results=[True], executor_failures={"step-2"}
+        )
         state = run_ultrawork_loop(_context(), registry, max_iterations=1)
 
         self.assertEqual(state.status.value, "failed")
         self.assertEqual(registry.fixer.calls, 1)
-        self.assertTrue(any("step-2 failed" in issue.message.lower() for issue in state.history[0].issues))
+        self.assertTrue(
+            any(
+                "step-2 failed" in issue.message.lower()
+                for issue in state.history[0].issues
+            )
+        )
 
     def test_pipeline_registry_normalizes_aliases(self) -> None:
         self.assertEqual(normalize_pipeline_name("ralplan"), "ralph")

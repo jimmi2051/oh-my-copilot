@@ -10,9 +10,23 @@ class ReviewerAgent:
         issues: list[ReviewerIssue] = []
         lowered = execution_text.lower()
         if "todo" in lowered or "placeholder" in lowered:
-            issues.append(ReviewerIssue(severity="high", message="Output contains placeholder/TODO content"))
+            issues.append(
+                ReviewerIssue(
+                    severity="high", message="Output contains placeholder/TODO content"
+                )
+            )
         if len(execution_text.strip()) < 40:
-            issues.append(ReviewerIssue(severity="medium", message="Execution output is too short to be actionable"))
+            issues.append(
+                ReviewerIssue(
+                    severity="medium",
+                    message="Execution output is too short to be actionable",
+                )
+            )
         if "error" in lowered and "fix" not in lowered:
-            issues.append(ReviewerIssue(severity="medium", message="Execution mentions error without remediation"))
+            issues.append(
+                ReviewerIssue(
+                    severity="medium",
+                    message="Execution mentions error without remediation",
+                )
+            )
         return ReviewerOutput(issues=issues)

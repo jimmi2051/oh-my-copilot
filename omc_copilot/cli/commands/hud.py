@@ -9,7 +9,9 @@ def run_hud(project_root: Path) -> int:
     if not state_dir.exists():
         print("HUD: no active tasks")
         return 0
-    files = sorted(state_dir.glob("*.json"), key=lambda p: p.stat().st_mtime, reverse=True)
+    files = sorted(
+        state_dir.glob("*.json"), key=lambda p: p.stat().st_mtime, reverse=True
+    )
     if not files:
         print("HUD: no active tasks")
         return 0
@@ -18,5 +20,7 @@ def run_hud(project_root: Path) -> int:
     status = latest.get("status")
     iteration = latest.get("iteration")
     max_iterations = latest.get("max_iterations")
-    print(f"HUD | mode={mode} | status={status} | iteration={iteration}/{max_iterations}")
+    print(
+        f"HUD | mode={mode} | status={status} | iteration={iteration}/{max_iterations}"
+    )
     return 0

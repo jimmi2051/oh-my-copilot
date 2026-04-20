@@ -6,7 +6,9 @@ from omc_copilot.schemas.agent_io import ReviewerIssue
 from omc_copilot.schemas.state import IterationRecord, TaskState, TaskStatus
 
 
-def run_ultraqa_loop(context: AgentContext, registry: AgentRegistry, max_iterations: int) -> TaskState:
+def run_ultraqa_loop(
+    context: AgentContext, registry: AgentRegistry, max_iterations: int
+) -> TaskState:
     if max_iterations < 1:
         raise ValueError("max_iterations must be >= 1")
 

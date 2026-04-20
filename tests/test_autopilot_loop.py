@@ -12,7 +12,9 @@ from omc_copilot.orchestrator.autopilot_loop import run_autopilot_loop
 
 class _FakeRuntime:
     def generate(self, prompt: str) -> RuntimeReply:
-        return RuntimeReply(prompt=prompt, text="implemented output without placeholders")
+        return RuntimeReply(
+            prompt=prompt, text="implemented output without placeholders"
+        )
 
 
 class AutopilotLoopTest(unittest.TestCase):

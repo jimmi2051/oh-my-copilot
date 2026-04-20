@@ -23,4 +23,8 @@ class SetupWizard:
         target_root.mkdir(parents=True, exist_ok=True)
         instruction_files = self.instructions.install(target_root)
         hook_manifest = self.hooks.install_manifest(target_root)
-        return SetupResult(target_root=target_root, instruction_files=instruction_files, hook_manifest=hook_manifest)
+        return SetupResult(
+            target_root=target_root,
+            instruction_files=instruction_files,
+            hook_manifest=hook_manifest,
+        )

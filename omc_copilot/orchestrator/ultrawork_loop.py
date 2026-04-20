@@ -9,7 +9,9 @@ from omc_copilot.schemas.state import IterationRecord, TaskState, TaskStatus
 from omc_copilot.schemas.task import TaskStep
 
 
-def run_ultrawork_loop(context: AgentContext, registry: AgentRegistry, max_iterations: int) -> TaskState:
+def run_ultrawork_loop(
+    context: AgentContext, registry: AgentRegistry, max_iterations: int
+) -> TaskState:
     if max_iterations < 1:
         raise ValueError("max_iterations must be >= 1")
 
@@ -40,7 +42,9 @@ def run_ultrawork_loop(context: AgentContext, registry: AgentRegistry, max_itera
         execution_issues: list[ReviewerIssue] = []
         with ThreadPoolExecutor(max_workers=max(1, len(state.steps))) as pool:
             future_map: dict[Future, str] = {
-                pool.submit(registry.executor.run, context, step, architecture.constraints): step.id
+                pool.submit(
+                    registry.executor.run, context, step, architecture.constraints
+                ): step.id
                 for step in state.steps
             }
             outputs = []
@@ -49,9 +53,14 @@ def run_ultrawork_loop(context: AgentContext, registry: AgentRegistry, max_itera
                     outputs.append(future.result())
                 except Exception as exc:
                     execution_issues.append(
-                        ReviewerIssue(severity="high", message=f"Step {step_id} failed during execution: {exc}")
+                        ReviewerIssue(
+                            severity="high",
+                            message=f"Step {step_id} failed during execution: {exc}",
+                        )
                     )
-        latest_output = "\n\n".join(f"[{out.step_id}] {out.result_text}" for out in outputs)
+        latest_output = "\n\n".join(
+            f"[{out.step_id}] {out.result_text}" for out in outputs
+        )
 
         review = registry.reviewer.run(context, latest_output)
         combined_issues = [*execution_issues, *review.issues]
