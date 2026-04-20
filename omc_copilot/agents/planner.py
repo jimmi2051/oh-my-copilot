@@ -16,7 +16,11 @@ class PlannerAgent:
         if numbered:
             parts = [p.strip() for p in numbered if p.strip()]
         elif " and " in task.lower():
-            parts = [p.strip() for p in re.split(r"\s+and\s+", task, flags=re.IGNORECASE) if p.strip()]
+            parts = [
+                p.strip()
+                for p in re.split(r"\s+and\s+", task, flags=re.IGNORECASE)
+                if p.strip()
+            ]
         else:
             parts = [task]
 

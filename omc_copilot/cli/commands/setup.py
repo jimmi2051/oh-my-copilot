@@ -22,14 +22,18 @@ def _plugin_manifest_path(package_root: Path) -> Path:
     return candidates[0]
 
 
-def run_setup(target: Path, plugin_guidance: bool = False, package_root: Path | None = None) -> int:
+def run_setup(
+    target: Path, plugin_guidance: bool = False, package_root: Path | None = None
+) -> int:
     package_root = _resolve_package_root(package_root)
     plugin_manifest = _plugin_manifest_path(package_root)
     plugin_present = plugin_manifest.exists()
     status = "OK" if plugin_present else "MISSING"
     print(f"{status:8} {str(PLUGIN_MANIFEST_RELATIVE_PATH):40} plugin package manifest")
     if not plugin_present:
-        print("Setup aborted: plugin-first workflow requires plugins/omc-copilot/plugin.json.")
+        print(
+            "Setup aborted: plugin-first workflow requires plugins/omc-copilot/plugin.json."
+        )
         return 1
 
     result = SetupWizard(package_root=package_root).run(target_root=target)

@@ -19,7 +19,9 @@ class TesterAgent:
     def run(self, context: AgentContext) -> TesterOutput:
         command = self._detect_command(context.project_root)
         if not command:
-            return TesterOutput(passed=True, summary="No test command detected; skipped.", details="")
+            return TesterOutput(
+                passed=True, summary="No test command detected; skipped.", details=""
+            )
 
         result = run_command(command, cwd=context.project_root)
         summary = "Tests passed" if result.ok else "Tests failed"

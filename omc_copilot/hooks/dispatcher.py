@@ -6,8 +6,8 @@ from typing import Any
 from omc_copilot.compatibility.hook_registry import supported_hook_events
 
 from .handlers.permission_request import handle_permission_request
-from .handlers.post_tool_use_failure import handle_post_tool_use_failure
 from .handlers.post_tool_use import handle_post_tool_use
+from .handlers.post_tool_use_failure import handle_post_tool_use_failure
 from .handlers.pre_compact import handle_pre_compact
 from .handlers.pre_tool_use import handle_pre_tool_use
 from .handlers.session_end import handle_session_end
@@ -70,7 +70,9 @@ class HookDispatcher:
             return handle_permission_request(
                 tool_name=_as_str(kwargs.get("tool_name")),
                 reason=_as_optional_str(kwargs.get("reason")),
-                requires_approval=_as_bool(kwargs.get("requires_approval"), default=True),
+                requires_approval=_as_bool(
+                    kwargs.get("requires_approval"), default=True
+                ),
             )
         if event == "PostToolUse":
             return handle_post_tool_use(
@@ -104,4 +106,8 @@ class HookDispatcher:
             return handle_session_end(_as_str(kwargs.get("summary")))
         if event in supported_hook_events():
             return {"event": event, "status": "handled-noop", "payload": kwargs}
-        return {"event": event, "status": "unsupported", "supported_events": supported_hook_events()}
+        return {
+            "event": event,
+            "status": "unsupported",
+            "supported_events": supported_hook_events(),
+        }

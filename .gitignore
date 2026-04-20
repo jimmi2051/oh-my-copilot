@@ -10,3 +10,9 @@ __pycache__/
 
 # Keep installed hook manifest template-like files out of git
 .omc/hooks/
+
+# Packaging / build artifacts
+*.egg-info/
+omc_copilot.egg-info/
+build/
+dist/

@@ -12,7 +12,9 @@ class SkillLoaderTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as td:
             root = Path(td) / "skills" / "autopilot"
             root.mkdir(parents=True, exist_ok=True)
-            (root / "SKILL.md").write_text("# Autopilot\n\nRun autonomous execution.", encoding="utf-8")
+            (root / "SKILL.md").write_text(
+                "# Autopilot\n\nRun autonomous execution.", encoding="utf-8"
+            )
             skills = load_skills(Path(td) / "skills")
             self.assertEqual(len(skills), 1)
             self.assertEqual(skills[0].name, "autopilot")

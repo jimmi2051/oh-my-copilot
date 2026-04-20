@@ -11,5 +11,4 @@ class RuntimeReply:
 
 
 class RuntimeAdapter(Protocol):
-    def generate(self, prompt: str) -> RuntimeReply:
-        ...
+    def generate(self, prompt: str) -> RuntimeReply: ...

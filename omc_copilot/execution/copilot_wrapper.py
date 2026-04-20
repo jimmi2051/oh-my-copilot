@@ -45,7 +45,9 @@ class CopilotWrapper:
 
     def run_copilot(self, prompt: str) -> CopilotSuggestResult:
         result = self._run(prompt)
-        return CopilotSuggestResult(prompt=prompt, output=result.stdout, command=result.command)
+        return CopilotSuggestResult(
+            prompt=prompt, output=result.stdout, command=result.command
+        )
 
     def explain_code(self, code: str) -> CopilotExplainResult:
         explain_prompt = (
@@ -55,4 +57,6 @@ class CopilotWrapper:
             "```"
         )
         result = self._run(explain_prompt)
-        return CopilotExplainResult(code=code, explanation=result.stdout, command=result.command)
+        return CopilotExplainResult(
+            code=code, explanation=result.stdout, command=result.command
+        )

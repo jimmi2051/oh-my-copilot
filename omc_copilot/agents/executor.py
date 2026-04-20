@@ -7,7 +7,9 @@ from .base import AgentContext
 
 
 class ExecutorAgent:
-    def run(self, context: AgentContext, step: TaskStep, constraints: list[str]) -> ExecutorOutput:
+    def run(
+        self, context: AgentContext, step: TaskStep, constraints: list[str]
+    ) -> ExecutorOutput:
         prompt = (
             "You are implementing one execution step.\n"
             f"Task: {context.task_prompt}\n"

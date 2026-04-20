@@ -7,7 +7,9 @@ from omc_copilot.schemas.state import IterationRecord, TaskState, TaskStatus
 from omc_copilot.schemas.task import TaskStep
 
 
-def run_team_pipeline(context: AgentContext, registry: AgentRegistry, max_iterations: int) -> TaskState:
+def run_team_pipeline(
+    context: AgentContext, registry: AgentRegistry, max_iterations: int
+) -> TaskState:
     if max_iterations < 1:
         raise ValueError("max_iterations must be >= 1")
 
@@ -75,7 +77,10 @@ def run_team_pipeline(context: AgentContext, registry: AgentRegistry, max_iterat
             state.final_result = latest_output
             return state
 
-        test_issue = ReviewerIssue(severity="high", message=f"Tests failed: {test.summary}. {test.details[:250]}".strip())
+        test_issue = ReviewerIssue(
+            severity="high",
+            message=f"Tests failed: {test.summary}. {test.details[:250]}".strip(),
+        )
         patched = registry.fixer.run(context, latest_output, [test_issue])
         latest_output = patched.patched_code
         state.history.append(

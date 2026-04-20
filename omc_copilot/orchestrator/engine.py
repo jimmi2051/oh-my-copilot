@@ -32,11 +32,17 @@ class OrchestratorEngine:
         self.artifacts = ArtifactStore(project_root)
         self.history = HistoryStore(project_root)
 
-    def run(self, prompt: str, mode: str | None = None, max_iterations: int | None = None) -> TaskState:
+    def run(
+        self, prompt: str, mode: str | None = None, max_iterations: int | None = None
+    ) -> TaskState:
         requested_mode = mode or detect_mode(prompt)
         pipeline_spec = get_pipeline_spec(requested_mode)
         resolved_mode = pipeline_spec.name
-        effective_iterations = max_iterations if max_iterations is not None else pipeline_spec.default_max_iterations
+        effective_iterations = (
+            max_iterations
+            if max_iterations is not None
+            else pipeline_spec.default_max_iterations
+        )
         task_id = task_id_from_prompt(prompt)
         context = AgentContext(
             task_prompt=prompt,
@@ -46,23 +52,41 @@ class OrchestratorEngine:
         )
 
         self.history.append(
-            {"ts": now_iso(), "event": "task_started", "task_id": task_id, "mode": resolved_mode, "prompt": prompt}
+            {
+                "ts": now_iso(),
+                "event": "task_started",
+                "task_id": task_id,
+                "mode": resolved_mode,
+                "prompt": prompt,
+            }
         )
 
         if resolved_mode == "team":
-            state = run_team_pipeline(context, self.registry, max_iterations=effective_iterations)
+            state = run_team_pipeline(
+                context, self.registry, max_iterations=effective_iterations
+            )
         elif resolved_mode == "ralph":
-            state = run_ralph_loop(context, self.registry, max_iterations=effective_iterations)
+            state = run_ralph_loop(
+                context, self.registry, max_iterations=effective_iterations
+            )
         elif resolved_mode == "ultrawork":
-            state = run_ultrawork_loop(context, self.registry, max_iterations=effective_iterations)
+            state = run_ultrawork_loop(
+                context, self.registry, max_iterations=effective_iterations
+            )
         elif resolved_mode == "ultraqa":
-            state = run_ultraqa_loop(context, self.registry, max_iterations=effective_iterations)
+            state = run_ultraqa_loop(
+                context, self.registry, max_iterations=effective_iterations
+            )
         else:
-            state = run_autopilot_loop(context, self.registry, max_iterations=effective_iterations)
+            state = run_autopilot_loop(
+                context, self.registry, max_iterations=effective_iterations
+            )
 
         self.state_manager.save(state)
         artifact_name = f"result-{resolved_mode}.md"
-        self.artifacts.write_text(state.task_id, artifact_name, state.final_result or "")
+        self.artifacts.write_text(
+            state.task_id, artifact_name, state.final_result or ""
+        )
         self.history.append(
             {
                 "ts": now_iso(),
@@ -72,7 +96,9 @@ class OrchestratorEngine:
                 "iterations": state.iteration,
             }
         )
-        self.logger.info("Task %s completed with status %s", state.task_id, state.status.value)
+        self.logger.info(
+            "Task %s completed with status %s", state.task_id, state.status.value
+        )
         return state
 
     @staticmethod

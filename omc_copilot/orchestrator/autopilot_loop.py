@@ -7,7 +7,9 @@ from omc_copilot.schemas.state import IterationRecord, TaskState, TaskStatus
 from omc_copilot.schemas.task import TaskStep
 
 
-def run_autopilot_loop(context: AgentContext, registry: AgentRegistry, max_iterations: int) -> TaskState:
+def run_autopilot_loop(
+    context: AgentContext, registry: AgentRegistry, max_iterations: int
+) -> TaskState:
     if max_iterations < 1:
         raise ValueError("max_iterations must be >= 1")
 
@@ -27,7 +29,12 @@ def run_autopilot_loop(context: AgentContext, registry: AgentRegistry, max_itera
     except Exception as exc:  # pragma: no cover - defensive path
         state.status = TaskStatus.FAILED
         state.history.append(
-            IterationRecord(index=0, phase="bootstrap", summary=f"Pipeline bootstrap failed: {exc}", issues=[])
+            IterationRecord(
+                index=0,
+                phase="bootstrap",
+                summary=f"Pipeline bootstrap failed: {exc}",
+                issues=[],
+            )
         )
         state.final_result = ""
         return state
@@ -47,17 +54,24 @@ def run_autopilot_loop(context: AgentContext, registry: AgentRegistry, max_itera
         execution_issues: list[ReviewerIssue] = []
         try:
             for step in state.steps:
-                exec_out = registry.executor.run(context, step, architecture.constraints)
+                exec_out = registry.executor.run(
+                    context, step, architecture.constraints
+                )
                 step_outputs.append(f"[{step.id}] {exec_out.result_text}")
         except Exception as exc:
-            execution_issues.append(ReviewerIssue(severity="high", message=f"Execution failed: {exc}"))
+            execution_issues.append(
+                ReviewerIssue(severity="high", message=f"Execution failed: {exc}")
+            )
         latest_output = "\n\n".join(step_outputs)
 
         try:
             review = registry.reviewer.run(context, latest_output)
             review_issues = [*execution_issues, *review.issues]
         except Exception as exc:
-            review_issues = [*execution_issues, ReviewerIssue(severity="high", message=f"Review failed: {exc}")]
+            review_issues = [
+                *execution_issues,
+                ReviewerIssue(severity="high", message=f"Review failed: {exc}"),
+            ]
 
         test_passed = False
         test_summary = "Tests unavailable"
@@ -70,7 +84,9 @@ def run_autopilot_loop(context: AgentContext, registry: AgentRegistry, max_itera
         except Exception as exc:
             test_summary = f"Tester failed: {exc}"
 
-        summary = f"issues={len(review_issues)} tests={'pass' if test_passed else 'fail'}"
+        summary = (
+            f"issues={len(review_issues)} tests={'pass' if test_passed else 'fail'}"
+        )
         state.history.append(
             IterationRecord(
                 index=iteration,

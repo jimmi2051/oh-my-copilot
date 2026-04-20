@@ -5,8 +5,8 @@ import io
 import tempfile
 import unittest
 from pathlib import Path
-from unittest.mock import patch
 from subprocess import CompletedProcess
+from unittest.mock import patch
 
 from omc_copilot.cli.commands.doctor import run_doctor
 
@@ -21,7 +21,9 @@ class DoctorCommandTest(unittest.TestCase):
         _write(root / "AGENTS.md", "# agents\n")
         _write(root / ".github" / "copilot-instructions.md", "# instructions\n")
         _write(root / ".github" / "instructions" / "omc.instructions.md", "# omc\n")
-        _write(root / ".github" / "plugin" / "marketplace.json", '{"name":"omc-copilot"}')
+        _write(
+            root / ".github" / "plugin" / "marketplace.json", '{"name":"omc-copilot"}'
+        )
 
     def test_doctor_reports_plugin_and_marketplace_assets(self) -> None:
         with tempfile.TemporaryDirectory() as td:
@@ -31,12 +33,19 @@ class DoctorCommandTest(unittest.TestCase):
                 root / "plugins" / "omc-copilot" / "plugin.json",
                 '{"agents":"agents","skills":"skills","hooks":"hooks.json"}',
             )
-            (root / "plugins" / "omc-copilot" / "agents").mkdir(parents=True, exist_ok=True)
-            (root / "plugins" / "omc-copilot" / "skills").mkdir(parents=True, exist_ok=True)
+            (root / "plugins" / "omc-copilot" / "agents").mkdir(
+                parents=True, exist_ok=True
+            )
+            (root / "plugins" / "omc-copilot" / "skills").mkdir(
+                parents=True, exist_ok=True
+            )
             _write(root / "plugins" / "omc-copilot" / "hooks.json", '{"name":"hooks"}')
 
             output = io.StringIO()
-            with patch("omc_copilot.cli.commands.doctor.shutil.which", return_value="/usr/local/bin/copilot"):
+            with patch(
+                "omc_copilot.cli.commands.doctor.shutil.which",
+                return_value="/usr/local/bin/copilot",
+            ):
                 with contextlib.redirect_stdout(output):
                     code = run_doctor(root)
 
@@ -52,12 +61,19 @@ class DoctorCommandTest(unittest.TestCase):
             root = Path(td)
             self._create_base_project(root)
             _write(root / "plugins" / "omc-copilot" / "plugin.json", "{not-json")
-            (root / "plugins" / "omc-copilot" / "agents").mkdir(parents=True, exist_ok=True)
-            (root / "plugins" / "omc-copilot" / "skills").mkdir(parents=True, exist_ok=True)
+            (root / "plugins" / "omc-copilot" / "agents").mkdir(
+                parents=True, exist_ok=True
+            )
+            (root / "plugins" / "omc-copilot" / "skills").mkdir(
+                parents=True, exist_ok=True
+            )
             _write(root / "plugins" / "omc-copilot" / "hooks.json", '{"name":"hooks"}')
 
             output = io.StringIO()
-            with patch("omc_copilot.cli.commands.doctor.shutil.which", return_value="/usr/local/bin/copilot"):
+            with patch(
+                "omc_copilot.cli.commands.doctor.shutil.which",
+                return_value="/usr/local/bin/copilot",
+            ):
                 with contextlib.redirect_stdout(output):
                     code = run_doctor(root)
 
@@ -74,10 +90,18 @@ class DoctorCommandTest(unittest.TestCase):
             _write(root / ".github" / "instructions" / "omc.instructions.md", "# omc\n")
 
             output = io.StringIO()
-            with patch("omc_copilot.cli.commands.doctor.shutil.which", return_value="/usr/local/bin/copilot"):
+            with patch(
+                "omc_copilot.cli.commands.doctor.shutil.which",
+                return_value="/usr/local/bin/copilot",
+            ):
                 with patch(
                     "omc_copilot.cli.commands.doctor.subprocess.run",
-                    return_value=CompletedProcess(args=["copilot", "plugin", "list"], returncode=0, stdout="omc-copilot", stderr=""),
+                    return_value=CompletedProcess(
+                        args=["copilot", "plugin", "list"],
+                        returncode=0,
+                        stdout="omc-copilot",
+                        stderr="",
+                    ),
                 ):
                     with contextlib.redirect_stdout(output):
                         code = run_doctor(root)

@@ -45,9 +45,19 @@ def load_skills(skills_root: Path) -> list[SkillMetadata]:
         name = skill_file.parent.name
         text = skill_file.read_text(encoding="utf-8")
         frontmatter, body = _extract_frontmatter(text)
-        description = frontmatter.get("description") or _extract_first_nonempty_line(body)
-        aliases = [alias.strip() for alias in frontmatter.get("aliases", "").split(",") if alias.strip()]
-        found.append(SkillMetadata(name=name, path=skill_file, description=description, aliases=aliases))
+        description = frontmatter.get("description") or _extract_first_nonempty_line(
+            body
+        )
+        aliases = [
+            alias.strip()
+            for alias in frontmatter.get("aliases", "").split(",")
+            if alias.strip()
+        ]
+        found.append(
+            SkillMetadata(
+                name=name, path=skill_file, description=description, aliases=aliases
+            )
+        )
     return found
 
 
@@ -65,6 +75,8 @@ def find_skill(skills_root: Path, name: str) -> Optional[SkillMetadata]:
 def skill_catalog_lines(skills: Iterable[SkillMetadata]) -> list[str]:
     lines: list[str] = []
     for skill in skills:
-        alias_suffix = f" (aliases: {', '.join(skill.aliases)})" if skill.aliases else ""
+        alias_suffix = (
+            f" (aliases: {', '.join(skill.aliases)})" if skill.aliases else ""
+        )
         lines.append(f"{skill.name}: {skill.description}{alias_suffix}")
     return lines

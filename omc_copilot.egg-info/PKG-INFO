@@ -6,6 +6,13 @@ Author: oh-my-copilot
 License-Expression: MIT
 Requires-Python: >=3.10
 Description-Content-Type: text/markdown
+Provides-Extra: dev
+Requires-Dist: pytest>=7.0; extra == "dev"
+Requires-Dist: black>=23.3.0; extra == "dev"
+Requires-Dist: flake8>=5.0.4; extra == "dev"
+Requires-Dist: isort>=5.12.0; extra == "dev"
+Requires-Dist: mypy>=1.3.0; extra == "dev"
+Requires-Dist: pre-commit>=3.4.0; extra == "dev"
 
 # omc-copilot
 
@@ -35,7 +42,7 @@ copilot plugin install omc-copilot@omc-copilot-marketplace
 python -m pip install -e .
 
 omc-copilot setup --target /path/to/repo --plugin-guidance
-omc-copilot doctor --project-root /path/to/repo
+omc-copilot doctor --project-root .
 ```
 
 `setup` validates `plugins/omc-copilot/plugin.json` before installing instruction assets.
@@ -135,6 +142,10 @@ omc-copilot doctor --project-root .
 - `.github/plugin/marketplace.json`
 - plugin component paths declared in `plugin.json` (`agents`, `skills`, `hooks`)
 
+Scope note:
+- In the `omc-copilot` source repository, `doctor` validates local plugin package and marketplace files.
+- In a consumer repository (for example, your app repo), `doctor` skips local plugin-package checks and verifies installed plugin presence via `copilot plugin list`.
+
 ---
 
 ## In-session methods and skill mapping
@@ -163,15 +174,18 @@ Examples:
 copilot plugin marketplace add <owner/repo-or-local-path>
 copilot plugin marketplace list
 copilot plugin marketplace browse <marketplace-name>
-copilot plugin marketplace update [marketplace-name]
-copilot plugin marketplace remove <marketplace-name>
 ```
 
 Examples:
 
 ```bash
-copilot plugin marketplace add oh-my-copilot/omc-copilot
+# remote marketplace (run anywhere)
+copilot plugin marketplace add jimmi2051/oh-my-copilot
+
+# local marketplace path (run only from a checkout of this repo)
+cd /path/to/oh-my-copilot
 copilot plugin marketplace add .
+
 copilot plugin marketplace list
 copilot plugin marketplace browse omc-copilot-marketplace
 ```
@@ -179,11 +193,36 @@ copilot plugin marketplace browse omc-copilot-marketplace
 ### Install / list / update / uninstall plugins
 
 ```bash
-copilot plugin install ./plugins/omc-copilot
+# install from marketplace (recommended for normal users)
 copilot plugin install omc-copilot@omc-copilot-marketplace
+
+# local path install (only when this repo is cloned locally)
+copilot plugin install ./plugins/omc-copilot
+
 copilot plugin list
 copilot plugin update omc-copilot
 copilot plugin uninstall omc-copilot
+```
+
+> Installing the Copilot plugin does **not** install the `omc-copilot` shell command.
+> The plugin gives in-session agents/skills/hooks for `copilot` sessions.
+
+## Install `omc-copilot` CLI binary
+
+If you want to run `omc-copilot ...` commands in your shell, install the Python package:
+
+```bash
+# from a local clone
+python -m pip install -e .
+
+# or directly from GitHub
+python -m pip install "git+https://github.com/jimmi2051/oh-my-copilot.git"
+```
+
+If your shell still cannot find `omc-copilot`, use:
+
+```bash
+python -m omc_copilot.cli.main --help
 ```
 
 ---
@@ -205,6 +244,47 @@ copilot plugin install ./plugins/omc-copilot
 omc-copilot setup --target .
 omc-copilot doctor --project-root .
 ```
+
+---
+
+## JS Interoperability Adapter
+
+A minimal Node.js interoperability adapter has been added under:
+
+- `omc_copilot/adapters/js_bridge.py` (Python wrapper)
+- `scripts/setup_node_adapter.sh` (helper to initialize a local npm environment)
+- `tests/test_js_bridge.py` (pytest integration test, skipped if Node.js is not installed)
+- `tests/test_js_bridge_unit.py` (mocked unit tests covering error paths)
+
+Quick start:
+
+1. Ensure Node.js (v16+) is installed and on your PATH, or install Docker for containerized execution.
+2. Run the helper to initialize a local npm project in the adapters folder (optional for development):
+
+```bash
+bash scripts/setup_node_adapter.sh
+```
+
+3. Example usage from Python:
+
+```python
+from omc_copilot.adapters.js_bridge import run_js_code
+# direct execution (requires node on PATH)
+res = run_js_code('console.log(JSON.stringify({ok:true, hello: "world"}));', timeout=5)
+
+# run inside a container for better isolation (requires docker)
+res = run_js_code('console.log(JSON.stringify({ok:true}));', use_docker=True, timeout=5)
+print(res)
+```
+
+Security note:
+
+WARNING: This adapter executes arbitrary JavaScript. Do NOT run untrusted code with the default (direct) execution mode. Prefer `use_docker=True` in untrusted environments — this runs the code in a network-disabled container with memory and CPU limits (Docker required). The container mode provides simple isolation but is not a full security boundary for hostile workloads. For stronger isolation use dedicated sandboxing, ephemeral VMs, or remote execution services.
+
+Notes:
+- The adapter is intentionally small: it runs Node.js processes and exchanges JSON via stdin/stdout.
+- The adapter performs a pre-check for required tools (node or docker) and raises JSBridgeError when they are missing.
+- Unit tests mock subprocess.run to cover error paths; an integration test runs when Node.js is available on PATH.
 
 ---
 

@@ -20,11 +20,15 @@ def build_parser() -> argparse.ArgumentParser:
 
     run_cmd = sub.add_parser("run", help="Run autopilot orchestration loop")
     run_cmd.add_argument("task", help="Task prompt")
-    run_cmd.add_argument("--mode", default=None, help="Mode override (autopilot/team/ralph)")
+    run_cmd.add_argument(
+        "--mode", default=None, help="Mode override (autopilot/team/ralph)"
+    )
     run_cmd.add_argument("--max-iterations", type=int, default=8)
     run_cmd.add_argument("--cwd", default=".")
 
-    setup_cmd = sub.add_parser("setup", help="Install OMC-style Copilot instructions for plugin-first workflow")
+    setup_cmd = sub.add_parser(
+        "setup", help="Install OMC-style Copilot instructions for plugin-first workflow"
+    )
     setup_cmd.add_argument("--target", default=".")
     setup_cmd.add_argument(
         "--plugin-guidance",
@@ -53,7 +57,9 @@ def build_parser() -> argparse.ArgumentParser:
     hud_cmd = sub.add_parser("hud", help="Print runtime HUD")
     hud_cmd.add_argument("--project-root", default=".")
 
-    parity_cmd = sub.add_parser("parity-inventory", help="Extract parity inventory from oh-my-claudecode")
+    parity_cmd = sub.add_parser(
+        "parity-inventory", help="Extract parity inventory from oh-my-claudecode"
+    )
     parity_cmd.add_argument("--omc-root", required=True)
 
     return parser
@@ -64,9 +70,13 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
 
     if args.command == "run":
-        return run_task(args.task, args.mode, args.max_iterations, Path(args.cwd).resolve())
+        return run_task(
+            args.task, args.mode, args.max_iterations, Path(args.cwd).resolve()
+        )
     if args.command == "setup":
-        return run_setup(Path(args.target).resolve(), plugin_guidance=args.plugin_guidance)
+        return run_setup(
+            Path(args.target).resolve(), plugin_guidance=args.plugin_guidance
+        )
     if args.command == "ask":
         return run_ask(args.prompt, Path(args.cwd).resolve())
     if args.command == "team":

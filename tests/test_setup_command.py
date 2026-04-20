@@ -46,7 +46,9 @@ class SetupCommandTest(unittest.TestCase):
             with patch("omc_copilot.cli.commands.setup.SetupWizard") as wizard_cls:
                 wizard_cls.return_value.run.return_value = setup_result
                 with contextlib.redirect_stdout(output):
-                    code = run_setup(target=target, plugin_guidance=True, package_root=package_root)
+                    code = run_setup(
+                        target=target, plugin_guidance=True, package_root=package_root
+                    )
 
             self.assertEqual(code, 0)
             wizard_cls.assert_called_once_with(package_root=package_root)

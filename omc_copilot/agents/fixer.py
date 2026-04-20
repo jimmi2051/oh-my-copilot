@@ -6,8 +6,13 @@ from .base import AgentContext
 
 
 class FixerAgent:
-    def run(self, context: AgentContext, execution_text: str, issues: list[ReviewerIssue]) -> FixerOutput:
-        issue_lines = "\n".join(f"- ({issue.severity}) {issue.message}" for issue in issues) or "- No issues"
+    def run(
+        self, context: AgentContext, execution_text: str, issues: list[ReviewerIssue]
+    ) -> FixerOutput:
+        issue_lines = (
+            "\n".join(f"- ({issue.severity}) {issue.message}" for issue in issues)
+            or "- No issues"
+        )
         prompt = (
             "Revise the implementation output to resolve the issues below.\n"
             f"Issues:\n{issue_lines}\n\n"

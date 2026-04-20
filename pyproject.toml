@@ -27,3 +27,14 @@ omc_copilot = [
   "templates/*",
   "templates/instructions/*",
 ]
+
+[project.optional-dependencies]
+# Development / test tooling
+dev = [
+  "pytest>=7.0",
+  "black>=23.3.0",
+  "flake8>=5.0.4",
+  "isort>=5.12.0",
+  "mypy>=1.3.0",
+  "pre-commit>=3.4.0",
+]
