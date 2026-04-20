@@ -1,0 +1,12 @@
+__pycache__/
+*.py[cod]
+
+.venv/
+.pytest_cache/
+
+# Runtime/session artifacts
+.omc/state/
+.omc/artifacts/
+
+# Keep installed hook manifest template-like files out of git
+.omc/hooks/
