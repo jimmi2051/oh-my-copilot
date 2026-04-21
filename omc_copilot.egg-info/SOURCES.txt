@@ -1,6 +1,7 @@
 README.md
 pyproject.toml
 omc_copilot/__init__.py
+omc_copilot/notifications.py
 omc_copilot.egg-info/PKG-INFO
 omc_copilot.egg-info/SOURCES.txt
 omc_copilot.egg-info/dependency_links.txt
@@ -22,6 +23,7 @@ omc_copilot/agents/reviewer.py
 omc_copilot/agents/tester.py
 omc_copilot/cli/__init__.py
 omc_copilot/cli/main.py
+omc_copilot/cli/notify.py
 omc_copilot/cli/commands/__init__.py
 omc_copilot/cli/commands/ask.py
 omc_copilot/cli/commands/doctor.py
@@ -91,6 +93,7 @@ tests/test_hook_installer.py
 tests/test_js_bridge.py
 tests/test_js_bridge_unit.py
 tests/test_merge_strategy.py
+tests/test_notifications.py
 tests/test_pipeline_parity.py
 tests/test_plugin_validation.py
 tests/test_setup_command.py

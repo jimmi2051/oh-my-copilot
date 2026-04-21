@@ -10,7 +10,7 @@ readme = "README.md"
 requires-python = ">=3.10"
 license = "MIT"
 authors = [{ name = "oh-my-copilot" }]
-dependencies = []
+dependencies = ["httpx>=0.24.0"]
 
 [project.scripts]
 omc-copilot = "omc_copilot.cli.main:main"
@@ -32,6 +32,7 @@ omc_copilot = [
 # Development / test tooling
 dev = [
   "pytest>=7.0",
+  "respx>=0.20.0",
   "black>=23.3.0",
   "flake8>=5.0.4",
   "isort>=5.12.0",

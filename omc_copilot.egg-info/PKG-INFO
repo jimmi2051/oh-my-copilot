@@ -6,8 +6,10 @@ Author: oh-my-copilot
 License-Expression: MIT
 Requires-Python: >=3.10
 Description-Content-Type: text/markdown
+Requires-Dist: httpx>=0.24.0
 Provides-Extra: dev
 Requires-Dist: pytest>=7.0; extra == "dev"
+Requires-Dist: respx>=0.20.0; extra == "dev"
 Requires-Dist: black>=23.3.0; extra == "dev"
 Requires-Dist: flake8>=5.0.4; extra == "dev"
 Requires-Dist: isort>=5.12.0; extra == "dev"

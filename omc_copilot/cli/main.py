@@ -12,6 +12,7 @@ from omc_copilot.cli.commands.run import run_task
 from omc_copilot.cli.commands.session import run_session_search
 from omc_copilot.cli.commands.setup import run_setup
 from omc_copilot.cli.commands.team import run_team
+from omc_copilot.cli.notify import main as notify_main
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -44,6 +45,8 @@ def build_parser() -> argparse.ArgumentParser:
     team_cmd.add_argument("task")
     team_cmd.add_argument("--max-iterations", type=int, default=10)
     team_cmd.add_argument("--cwd", default=".")
+
+    notify_cmd = sub.add_parser("notify", help="Notification configuration and send")
 
     session_cmd = sub.add_parser("session", help="Session operations")
     session_sub = session_cmd.add_subparsers(dest="session_cmd", required=True)
@@ -89,6 +92,13 @@ def main(argv: list[str] | None = None) -> int:
         return run_hud(Path(args.project_root).resolve())
     if args.command == "parity-inventory":
         return run_parity_inventory(Path(args.omc_root).resolve())
+    if args.command == "notify":
+        sub_argv = None
+        if argv is None:
+            sub_argv = sys.argv[2:]
+        else:
+            sub_argv = argv[1:]
+        return notify_main(sub_argv)
     parser.print_help()
     return 2
 

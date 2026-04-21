@@ -59,6 +59,16 @@
           "OMC_COMPAT_PROFILE": "phase2-day1",
           "OMC_COMPAT_NOTE": "Post-tool success events are wired for observability parity."
         }
+      },
+      {
+        "type": "command",
+        "bash": "python -m omc_copilot.cli.notify send --provider slack --message \"PostToolUse event\" || true",
+        "powershell": "python -m omc_copilot.cli.notify send --provider slack --message \"PostToolUse event\"; exit 0",
+        "timeoutSec": 5,
+        "env": {
+          "OMC_COMPAT_PROFILE": "notification-hook",
+          "OMC_COMPAT_NOTE": "Send a simple notification on PostToolUse."
+        }
       }
     ],
     "PostToolUseFailure": [
@@ -70,6 +80,16 @@
         "env": {
           "OMC_COMPAT_PROFILE": "phase2-day1",
           "OMC_COMPAT_NOTE": "Failure hook adds remediation guidance while keeping command flow stable."
+        }
+      },
+      {
+        "type": "command",
+        "bash": "python -m omc_copilot.cli.notify send --provider slack --message \"PostToolUseFailure event\" || true",
+        "powershell": "python -m omc_copilot.cli.notify send --provider slack --message \"PostToolUseFailure event\"; exit 0",
+        "timeoutSec": 5,
+        "env": {
+          "OMC_COMPAT_PROFILE": "notification-hook",
+          "OMC_COMPAT_NOTE": "Send notification on PostToolUseFailure."
         }
       }
     ],
@@ -130,6 +150,16 @@
         "env": {
           "OMC_COMPAT_PROFILE": "phase2-day1",
           "OMC_COMPAT_NOTE": "Session termination hook is wired for lifecycle parity."
+        }
+      },
+      {
+        "type": "command",
+        "bash": "python -m omc_copilot.cli.notify send --provider slack --message \"Session ended\" || true",
+        "powershell": "python -m omc_copilot.cli.notify send --provider slack --message \"Session ended\"; exit 0",
+        "timeoutSec": 5,
+        "env": {
+          "OMC_COMPAT_PROFILE": "notification-hook",
+          "OMC_COMPAT_NOTE": "Send a notification on session end."
         }
       }
     ]
