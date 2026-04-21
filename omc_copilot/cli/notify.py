@@ -4,6 +4,7 @@ This is a minimal, self-contained helper that writes a simple .omc/notify_config
 in the current working directory. The real project CLI can import and integrate these
 functions into the main CLI entrypoint.
 """
+
 from __future__ import annotations
 
 import argparse
@@ -46,7 +47,9 @@ def cmd_send(provider: str, message: str, tags: Optional[str] = None) -> int:
     cfg = load_config()
     webhook = cfg.get(provider)
     if not webhook:
-        print(f"No webhook configured for provider {provider}. Use `notify config set` first.")
+        print(
+            f"No webhook configured for provider {provider}. Use `notify config set` first."
+        )
         return 2
     notifier = WebhookNotifier(webhook, provider=provider)
     ok = notifier.send_sync(message, tags=tags)
@@ -59,7 +62,7 @@ def main(argv=None) -> int:
     sub = parser.add_subparsers(dest="sub")
 
     p_config = sub.add_parser("config", help="configure webhooks")
-    p_config.add_argument("action", choices=["set", "get"]) 
+    p_config.add_argument("action", choices=["set", "get"])
     p_config.add_argument("--provider", required=True)
     p_config.add_argument("--webhook")
 

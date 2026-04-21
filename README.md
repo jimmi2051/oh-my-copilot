@@ -42,6 +42,7 @@ If you only installed the plugin and see `zsh: command not found: omc-copilot`, 
 - `.github/copilot-instructions.md`
 - `.github/instructions/omc.instructions.md`
 - `.omc/hooks/omc-copilot-hooks.json`
+- optional notification hook wrappers under `.omc/hooks/` for session and failure notifications
 
 The hook manifest declares supported lifecycle events for OMC-compatible plugin behavior.
 

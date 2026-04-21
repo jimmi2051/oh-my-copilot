@@ -2,6 +2,7 @@
 
 Provides an async send() and a sync wrapper send_sync() suitable for CLI use and tests.
 """
+
 from __future__ import annotations
 
 import asyncio
@@ -23,13 +24,21 @@ class WebhookNotifier:
         n.send_sync("hello")
     """
 
-    def __init__(self, webhook_url: str, provider: str = "slack", timeout: int = DEFAULT_TIMEOUT, max_retries: int = 3):
+    def __init__(
+        self,
+        webhook_url: str,
+        provider: str = "slack",
+        timeout: int = DEFAULT_TIMEOUT,
+        max_retries: int = 3,
+    ):
         self.webhook_url = webhook_url
         self.provider = (provider or "slack").lower()
         self.timeout = timeout
         self.max_retries = max_retries
 
-    def _build_payload(self, message: str, tags: Optional[str] = None) -> Dict[str, Any]:
+    def _build_payload(
+        self, message: str, tags: Optional[str] = None
+    ) -> Dict[str, Any]:
         text = message
         if tags:
             text = f"{tags} {text}"
@@ -70,7 +79,9 @@ class WebhookNotifier:
                 status = getattr(resp, "status_code", None)
                 if status and 200 <= status < 300:
                     return True
-                logger.warning("Notifier sync attempt %d failed: status=%s", attempt, status)
+                logger.warning(
+                    "Notifier sync attempt %d failed: status=%s", attempt, status
+                )
             except Exception as exc:  # pragma: no cover - network errors
                 logger.exception("Notifier sync attempt %d error: %s", attempt, exc)
             time.sleep(backoff)
