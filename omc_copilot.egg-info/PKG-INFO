@@ -1,6 +1,6 @@
 Metadata-Version: 2.4
 Name: omc-copilot
-Version: 0.1.0
+Version: 0.1.1
 Summary: OMC-style multi-agent orchestration framework powered by GitHub Copilot CLI.
 Author: oh-my-copilot
 License-Expression: MIT
@@ -60,6 +60,7 @@ If you only installed the plugin and see `zsh: command not found: omc-copilot`, 
 - `.github/copilot-instructions.md`
 - `.github/instructions/omc.instructions.md`
 - `.omc/hooks/omc-copilot-hooks.json`
+- optional notification hook wrappers under `.omc/hooks/` for session and failure notifications
 
 The hook manifest declares supported lifecycle events for OMC-compatible plugin behavior.
 
