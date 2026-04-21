@@ -4,7 +4,8 @@ from types import SimpleNamespace
 
 import pytest
 
-from omc_copilot.adapters.js_bridge import JSBridgeError, run_js_code, run_js_script
+from omc_copilot.adapters.js_bridge import (JSBridgeError, run_js_code,
+                                            run_js_script)
 
 
 def _completed(stdout=b"", stderr=b"", returncode=0):

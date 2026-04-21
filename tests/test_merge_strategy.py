@@ -4,7 +4,8 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from omc_copilot.installer.merge_strategy import END_MARKER, START_MARKER, merge_file
+from omc_copilot.installer.merge_strategy import (END_MARKER, START_MARKER,
+                                                  merge_file)
 
 
 class MergeStrategyTest(unittest.TestCase):

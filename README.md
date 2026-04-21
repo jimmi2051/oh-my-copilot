@@ -2,6 +2,18 @@
 
 `omc-copilot` is an OMC-style multi-agent orchestration system built on top of GitHub Copilot CLI.
 
+## Translations & Quick Links
+
+English | 한국어 | 中文 | 日本語 | Español | Tiếng Việt | Português
+
+- oh-my-claudecode · npm version · npm downloads · GitHub stars · License: MIT · Sponsor · Discord
+
+For Codex users: Check out oh-my-codex — the same orchestration experience for OpenAI Codex CLI. Multi-agent orchestration for Claude Code. Zero learning curve. Don't learn Claude Code. Just use OMC.
+
+Get Started • Documentation • CLI Reference • Workflows • Migration Guide • Discord
+
+
+
 It ships as both:
 - a Python CLI (`omc-copilot ...`) for orchestration and setup
 - a Copilot plugin package (`plugins/omc-copilot/`) with agents, skills, and hooks

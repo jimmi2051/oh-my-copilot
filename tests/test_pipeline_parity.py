@@ -7,24 +7,15 @@ from pathlib import Path
 from omc_copilot.adapters.runtime_base import RuntimeReply
 from omc_copilot.agents.base import AgentContext
 from omc_copilot.compatibility.pipeline_registry import (
-    PIPELINES,
-    get_pipeline,
-    get_pipeline_spec,
-    normalize_pipeline_name,
-)
+    PIPELINES, get_pipeline, get_pipeline_spec, normalize_pipeline_name)
 from omc_copilot.orchestrator.autopilot_loop import run_autopilot_loop
 from omc_copilot.orchestrator.ralph_loop import run_ralph_loop
 from omc_copilot.orchestrator.team_pipeline import run_team_pipeline
 from omc_copilot.orchestrator.ultrawork_loop import run_ultrawork_loop
-from omc_copilot.schemas.agent_io import (
-    ArchitectOutput,
-    ExecutorOutput,
-    FixerOutput,
-    PlannerOutput,
-    ReviewerIssue,
-    ReviewerOutput,
-    TesterOutput,
-)
+from omc_copilot.schemas.agent_io import (ArchitectOutput, ExecutorOutput,
+                                          FixerOutput, PlannerOutput,
+                                          ReviewerIssue, ReviewerOutput,
+                                          TesterOutput)
 from omc_copilot.schemas.task import TaskStep
 
 
