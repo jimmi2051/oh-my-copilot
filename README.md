@@ -1,5 +1,7 @@
 # omc-copilot
 
+Website: https://oh-my-copilot-show-case.vercel.app/
+
 `omc-copilot` is an OMC-style multi-agent orchestration system built on top of GitHub Copilot CLI.
 
 It ships as both:

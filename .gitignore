@@ -16,3 +16,5 @@ __pycache__/
 omc_copilot.egg-info/
 build/
 dist/
+
+node_modules/
