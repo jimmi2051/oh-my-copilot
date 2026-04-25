@@ -1,288 +1,81 @@
-# omc-copilot
+# Oh My Copilot — Free GitHub Copilot proxy for personal LLM providers
 
-Website: https://oh-my-copilot-show-case.vercel.app/
-
-`omc-copilot` is an OMC-style multi-agent orchestration system built on top of GitHub Copilot CLI.
-
-It ships as both:
-- a Python CLI (`omc-copilot ...`) for orchestration and setup
-- a Copilot plugin package (`plugins/omc-copilot/`) with agents, skills, and hooks
+Free GitHub Copilot proxy for personal LLM providers. Supports OpenAI, Anthropic (Claude), Gemini, and DeepSeek via One API / New API.
 
 ---
 
-## Plugin-first workflow (recommended)
+## Introduction
 
-1. Add a marketplace (or use a local checkout)
-2. Install the `omc-copilot` plugin
-3. Install the Python CLI binary
-4. Run repository setup
-5. Use `omc-copilot` commands for orchestration
+Oh My Copilot is a lightweight proxy that lets you route GitHub Copilot requests to your chosen LLM provider (GPT-4, Claude 3.5, DeepSeek, Gemini, etc.) via One API or provider-specific New API endpoints. It is optimized for local and cloud deployment, low latency, and developer workflows (works with the VS Code Copilot extension).
 
-```bash
-# from this repository
-copilot plugin marketplace add .
-copilot plugin marketplace browse omc-copilot-marketplace
-copilot plugin install omc-copilot@omc-copilot-marketplace
+## Key Features
 
-# plugin install does NOT install the `omc-copilot` shell binary
-python -m pip install -e .
+- Multi-provider support: OpenAI, Anthropic (Claude), Gemini, DeepSeek (via One API / New API).
+- Easy deployment: Docker image and docker-compose examples included.
+- Low latency: connection pooling and minimal proxy overhead.
+- VS Code Copilot compatible: acts as a transparent Copilot proxy/gateway.
+- Configurable: environment variables to select provider, keys, and tuning options.
 
-omc-copilot setup --target /path/to/repo --plugin-guidance
-omc-copilot doctor --project-root .
-```
+## Tech Stack
 
-`setup` validates `plugins/omc-copilot/plugin.json` before installing instruction assets.
+- Golang (proxy core)
+- Docker (containerized deployment)
+- One-API / New API (provider gateway)
+- Optional: Python helpers and Node.js adapters
 
-If you only installed the plugin and see `zsh: command not found: omc-copilot`, install the Python package first (`python -m pip install -e .`) or invoke directly with `python -m omc_copilot.cli.main ...`.
+## Quick Start
 
----
-
-## What gets installed in a target repo
-
-`omc-copilot setup --target <path>` installs:
-- `AGENTS.md`
-- `.github/copilot-instructions.md`
-- `.github/instructions/omc.instructions.md`
-- `.omc/hooks/omc-copilot-hooks.json`
-- optional notification hook wrappers under `.omc/hooks/` for session and failure notifications
-
-The hook manifest declares supported lifecycle events for OMC-compatible plugin behavior.
-
----
-
-## Architecture overview
-
-### 1) Agents
-
-- Runtime orchestration uses internal agent roles: planner, architect, executor, reviewer, tester, fixer.
-- Plugin package also ships orchestrator agent specs under:
-  - `plugins/omc-copilot/agents/autopilot-orchestrator.agent.md`
-  - `plugins/omc-copilot/agents/team-orchestrator.agent.md`
-  - `plugins/omc-copilot/agents/ralph-orchestrator.agent.md`
-  - `plugins/omc-copilot/agents/ultrawork-orchestrator.agent.md`
-  - `plugins/omc-copilot/agents/ultraqa-orchestrator.agent.md`
-
-### 2) Skills
-
-Plugin skills live under `plugins/omc-copilot/skills/*/SKILL.md` and define OMC-style entry points like:
-- `omc.setup`, `omc.ask`, `omc.team`, `omc.session.search`, `omc.doctor`, `omc.hud`
-- mode skills such as `omc.autopilot`, `omc.ralph`, `omc.ultrawork`, `omc.ultraqa`
-- compatibility wrappers such as `omc.deep-interview`, `omc.ralplan`, `omc.skills.invoke`
-
-### 3) Hooks
-
-Plugin hooks are declared in `plugins/omc-copilot/hooks.json` and support:
-- `UserPromptSubmit`, `SessionStart`, `PreToolUse`, `PermissionRequest`
-- `PostToolUse`, `PostToolUseFailure`
-- `SubagentStart`, `SubagentStop`
-- `PreCompact`, `Stop`, `SessionEnd`
-
-### 4) Pipelines / modes
-
-Supported modes in `omc-copilot run --mode <name>`:
-- `autopilot` (default)
-- `team`
-- `ralph`
-- `ultrawork`
-- `ultraqa`
-
-Aliases:
-- `deep-interview` → `autopilot`
-- `ralplan` → `ralph`
-
-### 5) State and artifacts
-
-Runtime writes to:
-- `.omc/state/omc-copilot/<task-id>.json` (task state snapshots)
-- `.omc/state/omc-copilot-history.jsonl` (session history events)
-- `.omc/artifacts/omc-copilot/<task-id>/result-<mode>.md` (final artifacts)
-
----
-
-## CLI command reference
+Start a ready-to-run Docker container (example):
 
 ```bash
-omc-copilot run "<task>" [--mode MODE] [--max-iterations N] [--cwd PATH]
-omc-copilot setup [--target PATH] [--plugin-guidance]
-omc-copilot ask "<prompt>" [--cwd PATH]
-omc-copilot team "<task>" [--max-iterations N] [--cwd PATH]
-omc-copilot session search "<query>" [--project-root PATH]
-omc-copilot doctor [--project-root PATH]
-omc-copilot hud [--project-root PATH]
-omc-copilot parity-inventory --omc-root PATH
+# Example: run using One API / OpenAI provider
+docker run -d --name oh-my-copilot \
+  -p 8080:8080 \
+  -e PROVIDER=openai \
+  -e ONE_API_KEY="$ONE_API_KEY" \
+  -e PORT=8080 \
+  jimmi2051/oh-my-copilot:latest
+
+# Point VS Code Copilot to: http://localhost:8080
 ```
 
-Quick examples:
+Using docker-compose:
 
-```bash
-omc-copilot run "build a REST API in FastAPI"
-omc-copilot run "stabilize flaky tests" --mode ultraqa --cwd .
-omc-copilot team "implement auth and tests"
-omc-copilot ask "review this patch for security issues"
-omc-copilot session search "auth" --project-root .
-omc-copilot hud --project-root .
-omc-copilot doctor --project-root .
+```yaml
+version: "3.8"
+services:
+  oh-my-copilot:
+    image: jimmi2051/oh-my-copilot:latest
+    ports:
+      - "8080:8080"
+    environment:
+      - PROVIDER=openai
+      - ONE_API_KEY=${ONE_API_KEY}
 ```
 
-`doctor` checks runtime and required assets, including:
-- `plugins/omc-copilot/plugin.json`
-- `.github/plugin/marketplace.json`
-- plugin component paths declared in `plugin.json` (`agents`, `skills`, `hooks`)
+## Configuration
 
-Scope note:
-- In the `omc-copilot` source repository, `doctor` validates local plugin package and marketplace files.
-- In a consumer repository (for example, your app repo), `doctor` skips local plugin-package checks and verifies installed plugin presence via `copilot plugin list`.
+Environment variables:
+- PROVIDER — openai | anthropic | gemini | deepseek
+- ONE_API_KEY / NEW_API_KEY — gateway API key
+- PORT — service port (default: 8080)
 
----
+## Contributing
 
-## In-session methods and skill mapping
+See CONTRIBUTING.md. Contributions welcome — open an issue or PR.
 
-`omc_copilot/compatibility/session_method_map.json` is the source of truth for method routing.
+## SEO & Topics (suggested)
 
-Current status model:
-- `implemented`: command/function path is wired end-to-end
-- `partial`: route exists but dedicated compatibility surface is incomplete
-- `planned`: metadata/spec exists but command surface is not wired yet
+Keywords: GitHub Copilot proxy, copilot-free, llm-gateway, deepseek, anthropic-claude
 
-Examples:
-- `omc.setup` → `omc-copilot setup`
-- `omc.ask` → `omc-copilot ask`
-- `omc.team` → `omc-copilot team`
-- `omc.autopilot` / `omc.ralph` / `omc.ultrawork` / `omc.ultraqa` → `omc-copilot run --mode ...`
-- `omc.skills.invoke` is documented for compatibility; dedicated session-level invocation command is not exposed yet
+Topics: github-copilot-proxy, copilot-free, llm-gateway, deepseek, anthropic-claude
 
----
+## Links
 
-## Marketplace and plugin operations
-
-### Add / list / browse marketplaces
-
-```bash
-copilot plugin marketplace add <owner/repo-or-local-path>
-copilot plugin marketplace list
-copilot plugin marketplace browse <marketplace-name>
-```
-
-Examples:
-
-```bash
-# remote marketplace (run anywhere)
-copilot plugin marketplace add jimmi2051/oh-my-copilot
-
-# local marketplace path (run only from a checkout of this repo)
-cd /path/to/oh-my-copilot
-copilot plugin marketplace add .
-
-copilot plugin marketplace list
-copilot plugin marketplace browse omc-copilot-marketplace
-```
-
-### Install / list / update / uninstall plugins
-
-```bash
-# install from marketplace (recommended for normal users)
-copilot plugin install omc-copilot@omc-copilot-marketplace
-
-# local path install (only when this repo is cloned locally)
-copilot plugin install ./plugins/omc-copilot
-
-copilot plugin list
-copilot plugin update omc-copilot
-copilot plugin uninstall omc-copilot
-```
-
-> Installing the Copilot plugin does **not** install the `omc-copilot` shell command.
-> The plugin gives in-session agents/skills/hooks for `copilot` sessions.
-
-## Install `omc-copilot` CLI binary
-
-If you want to run `omc-copilot ...` commands in your shell, install the Python package:
-
-```bash
-# from a local clone
-python -m pip install -e .
-
-# or directly from GitHub
-python -m pip install "git+https://github.com/jimmi2051/oh-my-copilot.git"
-```
-
-If your shell still cannot find `omc-copilot`, use:
-
-```bash
-python -m omc_copilot.cli.main --help
-```
-
----
-
-## Local development setup flow
-
-```bash
-cd omc-copilot
-python -m venv .venv
-source .venv/bin/activate
-python -m pip install -e .
-python -m unittest discover -s tests -p "test_*.py"
-```
-
-Then validate the plugin-first path:
-
-```bash
-copilot plugin install ./plugins/omc-copilot
-omc-copilot setup --target .
-omc-copilot doctor --project-root .
-```
-
----
-
-## JS Interoperability Adapter
-
-A minimal Node.js interoperability adapter has been added under:
-
-- `omc_copilot/adapters/js_bridge.py` (Python wrapper)
-- `scripts/setup_node_adapter.sh` (helper to initialize a local npm environment)
-- `tests/test_js_bridge.py` (pytest integration test, skipped if Node.js is not installed)
-- `tests/test_js_bridge_unit.py` (mocked unit tests covering error paths)
-
-Quick start:
-
-1. Ensure Node.js (v16+) is installed and on your PATH, or install Docker for containerized execution.
-2. Run the helper to initialize a local npm project in the adapters folder (optional for development):
-
-```bash
-bash scripts/setup_node_adapter.sh
-```
-
-3. Example usage from Python:
-
-```python
-from omc_copilot.adapters.js_bridge import run_js_code
-# direct execution (requires node on PATH)
-res = run_js_code('console.log(JSON.stringify({ok:true, hello: "world"}));', timeout=5)
-
-# run inside a container for better isolation (requires docker)
-res = run_js_code('console.log(JSON.stringify({ok:true}));', use_docker=True, timeout=5)
-print(res)
-```
-
-Security note:
-
-WARNING: This adapter executes arbitrary JavaScript. Do NOT run untrusted code with the default (direct) execution mode. Prefer `use_docker=True` in untrusted environments — this runs the code in a network-disabled container with memory and CPU limits (Docker required). The container mode provides simple isolation but is not a full security boundary for hostile workloads. For stronger isolation use dedicated sandboxing, ephemeral VMs, or remote execution services.
-
-Notes:
-- The adapter is intentionally small: it runs Node.js processes and exchanges JSON via stdin/stdout.
-- The adapter performs a pre-check for required tools (node or docker) and raises JSBridgeError when they are missing.
-- Unit tests mock subprocess.run to cover error paths; an integration test runs when Node.js is available on PATH.
-
----
+- Website: https://oh-my-copilot-show-case.vercel.app/
+- Docs: docs/
 
 ## License
 
-This project is licensed under the MIT License. See `LICENSE` for the full text.
+This project is licensed under the MIT License. See LICENSE for details.
 
-## Copyright
-
-Copyright (c) 2025 OMC-Copilot contributors.
-
-## Attribution / Inspiration
-
-Inspired by: oh-my-claudecode by Yeachan Heo. The power of multi-agent orchestration, now for GitHub Copilot.
