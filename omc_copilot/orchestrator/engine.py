@@ -3,7 +3,7 @@ from __future__ import annotations
 from dataclasses import asdict
 from pathlib import Path
 
-from omc_copilot.adapters.copilot_cli import CopilotRuntimeAdapter
+from omc_copilot.adapters.runtime_factory import build_runtime_adapter
 from omc_copilot.agents.base import AgentContext
 from omc_copilot.agents.registry import build_default_registry
 from omc_copilot.compatibility.keyword_router import detect_mode
@@ -23,10 +23,10 @@ from .lifecycle import now_iso, task_id_from_prompt
 
 
 class OrchestratorEngine:
-    def __init__(self, project_root: Path) -> None:
+    def __init__(self, project_root: Path, runtime: str | None = None) -> None:
         self.project_root = project_root
         self.logger = get_logger("omc_copilot.orchestrator")
-        self.runtime = CopilotRuntimeAdapter(working_dir=project_root)
+        self.runtime = build_runtime_adapter(runtime, working_dir=project_root)
         self.registry = build_default_registry()
         self.state_manager = StateManager(project_root)
         self.artifacts = ArtifactStore(project_root)

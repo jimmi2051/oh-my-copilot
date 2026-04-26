@@ -10,12 +10,12 @@
         "name": "omc-copilot setup"
       },
       "runtime": {
-        "command": "omc-copilot setup --target <path>",
+        "command": "omc-copilot setup --target <path> [--runtime copilot|codex|both] [--codex-skills-dir <path>]",
         "function": "omc_copilot.cli.commands.setup.run_setup",
         "backend": "omc_copilot.installer.setup_wizard.SetupWizard.run"
       },
       "status": "implemented",
-      "notes": "Installs AGENTS/instructions + hook manifest into target repository."
+      "notes": "Installs AGENTS + hook manifest for all runtimes; installs Copilot .github instructions for copilot/both and Codex-native skills for codex/both."
     },
     {
       "method": "omc.ask",
@@ -24,12 +24,12 @@
         "name": "omc-copilot ask"
       },
       "runtime": {
-        "command": "omc-copilot ask <prompt>",
+        "command": "omc-copilot ask <prompt> [--runtime copilot|codex]",
         "function": "omc_copilot.cli.commands.ask.run_ask",
-        "backend": "omc_copilot.adapters.copilot_cli.CopilotRuntimeAdapter.generate"
+        "backend": "omc_copilot.adapters.runtime_factory.build_runtime_adapter"
       },
       "status": "implemented",
-      "notes": "Direct single-shot prompt passthrough to Copilot CLI runtime."
+      "notes": "Direct single-shot prompt passthrough to the selected Copilot or Codex runtime."
     },
     {
       "method": "omc.team",
@@ -38,7 +38,7 @@
         "name": "omc-copilot team"
       },
       "runtime": {
-        "command": "omc-copilot team <task> --max-iterations N",
+        "command": "omc-copilot team <task> --max-iterations N [--runtime copilot|codex]",
         "function": "omc_copilot.cli.commands.team.run_team",
         "backend": "omc_copilot.orchestrator.team_pipeline.run_team_pipeline"
       },
@@ -66,12 +66,12 @@
         "name": "omc-copilot doctor"
       },
       "runtime": {
-        "command": "omc-copilot doctor --project-root <path>",
+        "command": "omc-copilot doctor --project-root <path> [--runtime copilot|codex|both] [--codex-skills-dir <path>]",
         "function": "omc_copilot.cli.commands.doctor.run_doctor",
         "backend": "filesystem + PATH checks"
       },
       "status": "implemented",
-      "notes": "Checks copilot binary availability and required instruction files."
+      "notes": "Checks selected runtime executable availability, required instruction files, and Codex skill installation when applicable."
     },
     {
       "method": "omc.hud",
@@ -94,7 +94,7 @@
         "name": "omc-copilot run --mode autopilot"
       },
       "runtime": {
-        "command": "omc-copilot run <task> [--mode autopilot]",
+        "command": "omc-copilot run <task> [--mode autopilot] [--runtime copilot|codex]",
         "function": "omc_copilot.cli.commands.run.run_task",
         "backend": "omc_copilot.orchestrator.autopilot_loop.run_autopilot_loop"
       },
@@ -108,7 +108,7 @@
         "name": "omc-copilot run --mode ralph"
       },
       "runtime": {
-        "command": "omc-copilot run <task> --mode ralph",
+        "command": "omc-copilot run <task> --mode ralph [--runtime copilot|codex]",
         "function": "omc_copilot.cli.commands.run.run_task",
         "backend": "omc_copilot.orchestrator.ralph_loop.run_ralph_loop"
       },
@@ -122,7 +122,7 @@
         "name": "omc-copilot run --mode ultrawork"
       },
       "runtime": {
-        "command": "omc-copilot run <task> --mode ultrawork",
+        "command": "omc-copilot run <task> --mode ultrawork [--runtime copilot|codex]",
         "function": "omc_copilot.cli.commands.run.run_task",
         "backend": "omc_copilot.orchestrator.ultrawork_loop.run_ultrawork_loop"
       },
@@ -136,7 +136,7 @@
         "name": "omc-copilot run --mode ultraqa"
       },
       "runtime": {
-        "command": "omc-copilot run <task> --mode ultraqa",
+        "command": "omc-copilot run <task> --mode ultraqa [--runtime copilot|codex]",
         "function": "omc_copilot.cli.commands.run.run_task",
         "backend": "omc_copilot.orchestrator.ultraqa_loop.run_ultraqa_loop"
       },
@@ -150,7 +150,7 @@
         "name": "omc-copilot run --mode deep-interview"
       },
       "runtime": {
-        "command": "omc-copilot run <task> --mode deep-interview",
+        "command": "omc-copilot run <task> --mode deep-interview [--runtime copilot|codex]",
         "function": "omc_copilot.compatibility.pipeline_registry.normalize_pipeline_name",
         "backend": "alias deep-interview -> autopilot"
       },
@@ -164,7 +164,7 @@
         "name": "omc-copilot run --mode ralplan"
       },
       "runtime": {
-        "command": "omc-copilot run <task> --mode ralplan",
+        "command": "omc-copilot run <task> --mode ralplan [--runtime copilot|codex]",
         "function": "omc_copilot.compatibility.pipeline_registry.normalize_pipeline_name",
         "backend": "alias ralplan -> ralph"
       },

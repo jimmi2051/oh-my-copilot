@@ -1,0 +1,21 @@
+{
+  "name": "omc-copilot-marketplace",
+  "interface": {
+    "displayName": "OMC Copilot Marketplace"
+  },
+  "plugins": [
+    {
+      "name": "omc-copilot",
+      "source": {
+        "source": "local",
+        "path": "./plugins/omc-copilot"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}
+

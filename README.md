@@ -2,7 +2,7 @@
 
 Website: https://oh-my-copilot-show-case.vercel.app/
 
-`omc-copilot` is an OMC-style multi-agent orchestration system built on top of GitHub Copilot CLI.
+`omc-copilot` is an OMC-style multi-agent orchestration system built on top of GitHub Copilot CLI, with optional Codex CLI runtime support.
 
 It ships as both:
 - a Python CLI (`omc-copilot ...`) for orchestration and setup
@@ -31,7 +31,7 @@ omc-copilot setup --target /path/to/repo --plugin-guidance
 omc-copilot doctor --project-root .
 ```
 
-`setup` validates `plugins/omc-copilot/plugin.json` before installing instruction assets.
+`setup` validates `plugins/omc-copilot/plugin.json` before installing Copilot instruction assets.
 
 If you only installed the plugin and see `zsh: command not found: omc-copilot`, install the Python package first (`python -m pip install -e .`) or invoke directly with `python -m omc_copilot.cli.main ...`.
 
@@ -45,6 +45,8 @@ If you only installed the plugin and see `zsh: command not found: omc-copilot`, 
 - `.github/instructions/omc.instructions.md`
 - `.omc/hooks/omc-copilot-hooks.json`
 - optional notification hook wrappers under `.omc/hooks/` for session and failure notifications
+
+`omc-copilot setup --runtime codex --target <path>` installs or updates `AGENTS.md`, `.omc/hooks/`, and Codex-native OMC skills under `$CODEX_HOME/skills` or `~/.codex/skills`. Use `--runtime both` to install both Codex skills and Copilot assets.
 
 The hook manifest declares supported lifecycle events for OMC-compatible plugin behavior.
 
@@ -102,12 +104,12 @@ Runtime writes to:
 ## CLI command reference
 
 ```bash
-omc-copilot run "<task>" [--mode MODE] [--max-iterations N] [--cwd PATH]
-omc-copilot setup [--target PATH] [--plugin-guidance]
-omc-copilot ask "<prompt>" [--cwd PATH]
-omc-copilot team "<task>" [--max-iterations N] [--cwd PATH]
+omc-copilot run "<task>" [--mode MODE] [--max-iterations N] [--cwd PATH] [--runtime copilot|codex]
+omc-copilot setup [--target PATH] [--plugin-guidance] [--runtime copilot|codex|both] [--codex-skills-dir PATH]
+omc-copilot ask "<prompt>" [--cwd PATH] [--runtime copilot|codex]
+omc-copilot team "<task>" [--max-iterations N] [--cwd PATH] [--runtime copilot|codex]
 omc-copilot session search "<query>" [--project-root PATH]
-omc-copilot doctor [--project-root PATH]
+omc-copilot doctor [--project-root PATH] [--runtime copilot|codex|both] [--codex-skills-dir PATH]
 omc-copilot hud [--project-root PATH]
 omc-copilot parity-inventory --omc-root PATH
 ```
@@ -124,10 +126,18 @@ omc-copilot hud --project-root .
 omc-copilot doctor --project-root .
 ```
 
+Runtime selection:
+- Default runtime is `copilot`.
+- CLI `--runtime` takes precedence over `OMC_RUNTIME`.
+- `OMC_RUNTIME=codex` routes `run`, `team`, and `ask` through `codex exec`.
+- The Codex backend uses `codex exec --sandbox read-only -c approval_policy="never" --cd <cwd> <prompt>` so nested runtime calls behave as text-generation calls; make repository edits from the active outer session.
+- `setup --runtime codex` installs Codex-native skills such as `omc.ask`, `omc.team`, and `omc.autopilot` into the Codex skills directory. Start a new Codex session after setup for skill discovery to refresh.
+
 `doctor` checks runtime and required assets, including:
 - `plugins/omc-copilot/plugin.json`
 - `.github/plugin/marketplace.json`
 - plugin component paths declared in `plugin.json` (`agents`, `skills`, `hooks`)
+- for Codex runtime, `codex` executable availability, the managed OMC block in `AGENTS.md`, and installed Codex-native OMC skill folders
 
 Scope note:
 - In the `omc-copilot` source repository, `doctor` validates local plugin package and marketplace files.

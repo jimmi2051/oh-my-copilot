@@ -5,7 +5,7 @@
   },
   "metadata": {
     "description": "Marketplace for OMC-style GitHub Copilot CLI plugins.",
-    "version": "0.1.1",
+    "version": "0.1.2",
     "pluginRoot": "plugins"
   },
   "plugins": [
@@ -13,7 +13,7 @@
       "name": "omc-copilot",
       "source": "omc-copilot",
       "description": "OMC-style orchestration plugin for GitHub Copilot CLI with day-one compatibility skills and lifecycle hooks.",
-      "version": "0.1.1",
+      "version": "0.1.2",
       "author": {
         "name": "oh-my-copilot",
         "url": "https://github.com/jimmi2051/oh-my-copilot"

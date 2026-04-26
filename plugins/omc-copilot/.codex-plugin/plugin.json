@@ -1,0 +1,41 @@
+{
+  "name": "omc-copilot",
+  "version": "0.1.2",
+  "description": "OMC-style orchestration plugin for GitHub Copilot CLI and Codex with compatibility skills and lifecycle hooks.",
+  "author": {
+    "name": "oh-my-copilot",
+    "url": "https://github.com/jimmi2051/oh-my-copilot"
+  },
+  "homepage": "https://github.com/jimmi2051/oh-my-copilot",
+  "repository": "https://github.com/jimmi2051/oh-my-copilot",
+  "license": "MIT",
+  "keywords": [
+    "codex",
+    "copilot-cli",
+    "plugin",
+    "orchestration",
+    "multi-agent",
+    "omc"
+  ],
+  "skills": "./skills/",
+  "hooks": "./hooks.json",
+  "interface": {
+    "displayName": "OMC Copilot",
+    "shortDescription": "OMC compatibility workflows for Codex and GitHub Copilot CLI.",
+    "longDescription": "OMC Copilot provides compatibility commands, orchestration workflows, Codex-native skills, and lifecycle hooks for plan-execute-review-test-fix automation.",
+    "developerName": "oh-my-copilot",
+    "category": "Productivity",
+    "capabilities": [
+      "Interactive",
+      "Write"
+    ],
+    "websiteURL": "https://github.com/jimmi2051/oh-my-copilot",
+    "defaultPrompt": [
+      "Run OMC autopilot for this task.",
+      "Check OMC setup and runtime health.",
+      "Route this through an OMC team workflow."
+    ],
+    "brandColor": "#2563EB"
+  }
+}
+

@@ -14,6 +14,9 @@ from omc_copilot.cli.commands.setup import run_setup
 from omc_copilot.cli.commands.team import run_team
 from omc_copilot.cli.notify import main as notify_main
 
+BACKEND_RUNTIME_CHOICES = ("copilot", "codex")
+SETUP_RUNTIME_CHOICES = ("copilot", "codex", "both")
+
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="omc-copilot")
@@ -26,6 +29,7 @@ def build_parser() -> argparse.ArgumentParser:
     )
     run_cmd.add_argument("--max-iterations", type=int, default=8)
     run_cmd.add_argument("--cwd", default=".")
+    run_cmd.add_argument("--runtime", choices=BACKEND_RUNTIME_CHOICES, default=None)
 
     setup_cmd = sub.add_parser(
         "setup", help="Install OMC-style Copilot instructions for plugin-first workflow"
@@ -36,15 +40,23 @@ def build_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="Print a copilot plugin install command after setup",
     )
+    setup_cmd.add_argument("--runtime", choices=SETUP_RUNTIME_CHOICES, default=None)
+    setup_cmd.add_argument(
+        "--codex-skills-dir",
+        default=None,
+        help="Override Codex skills install directory (defaults to $CODEX_HOME/skills or ~/.codex/skills)",
+    )
 
     ask_cmd = sub.add_parser("ask", help="Ask Copilot directly")
     ask_cmd.add_argument("prompt")
     ask_cmd.add_argument("--cwd", default=".")
+    ask_cmd.add_argument("--runtime", choices=BACKEND_RUNTIME_CHOICES, default=None)
 
     team_cmd = sub.add_parser("team", help="Team-compatible orchestration mode")
     team_cmd.add_argument("task")
     team_cmd.add_argument("--max-iterations", type=int, default=10)
     team_cmd.add_argument("--cwd", default=".")
+    team_cmd.add_argument("--runtime", choices=BACKEND_RUNTIME_CHOICES, default=None)
 
     notify_cmd = sub.add_parser("notify", help="Notification configuration and send")
 
@@ -56,6 +68,12 @@ def build_parser() -> argparse.ArgumentParser:
 
     doctor_cmd = sub.add_parser("doctor", help="Check installation health")
     doctor_cmd.add_argument("--project-root", default=".")
+    doctor_cmd.add_argument("--runtime", choices=SETUP_RUNTIME_CHOICES, default=None)
+    doctor_cmd.add_argument(
+        "--codex-skills-dir",
+        default=None,
+        help="Override Codex skills directory to check",
+    )
 
     hud_cmd = sub.add_parser("hud", help="Print runtime HUD")
     hud_cmd.add_argument("--project-root", default=".")
@@ -74,20 +92,44 @@ def main(argv: list[str] | None = None) -> int:
 
     if args.command == "run":
         return run_task(
-            args.task, args.mode, args.max_iterations, Path(args.cwd).resolve()
+            args.task,
+            args.mode,
+            args.max_iterations,
+            Path(args.cwd).resolve(),
+            runtime_name=args.runtime,
         )
     if args.command == "setup":
         return run_setup(
-            Path(args.target).resolve(), plugin_guidance=args.plugin_guidance
+            Path(args.target).resolve(),
+            plugin_guidance=args.plugin_guidance,
+            runtime_name=args.runtime,
+            codex_skills_dir=(
+                Path(args.codex_skills_dir).expanduser().resolve()
+                if args.codex_skills_dir
+                else None
+            ),
         )
     if args.command == "ask":
-        return run_ask(args.prompt, Path(args.cwd).resolve())
+        return run_ask(args.prompt, Path(args.cwd).resolve(), runtime_name=args.runtime)
     if args.command == "team":
-        return run_team(args.task, Path(args.cwd).resolve(), args.max_iterations)
+        return run_team(
+            args.task,
+            Path(args.cwd).resolve(),
+            args.max_iterations,
+            runtime_name=args.runtime,
+        )
     if args.command == "session" and args.session_cmd == "search":
         return run_session_search(args.query, Path(args.project_root).resolve())
     if args.command == "doctor":
-        return run_doctor(Path(args.project_root).resolve())
+        return run_doctor(
+            Path(args.project_root).resolve(),
+            runtime_name=args.runtime,
+            codex_skills_dir=(
+                Path(args.codex_skills_dir).expanduser().resolve()
+                if args.codex_skills_dir
+                else None
+            ),
+        )
     if args.command == "hud":
         return run_hud(Path(args.project_root).resolve())
     if args.command == "parity-inventory":

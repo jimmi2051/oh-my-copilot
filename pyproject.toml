@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "omc-copilot"
-version = "0.1.1"
+version = "0.1.2"
 description = "OMC-style multi-agent orchestration framework powered by GitHub Copilot CLI."
 readme = "README.md"
 requires-python = ">=3.10"
@@ -26,6 +26,9 @@ exclude = ["tests*"]
 omc_copilot = [
   "templates/*",
   "templates/instructions/*",
+  "templates/codex-skills/*/SKILL.md",
+  "templates/codex-skills/*/*",
+  "templates/codex-skills/*/*/*",
 ]
 
 [project.optional-dependencies]
