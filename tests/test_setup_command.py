@@ -141,8 +141,7 @@ class SetupCommandTest(unittest.TestCase):
             skills_root = Path(td) / "codex-skills"
             target.mkdir(parents=True, exist_ok=True)
             (target / "AGENTS.md").write_text(
-                "# user notes\n\n"
-                f"{START_MARKER}\nold managed block\n{END_MARKER}\n",
+                "# user notes\n\n" f"{START_MARKER}\nold managed block\n{END_MARKER}\n",
                 encoding="utf-8",
             )
 
@@ -191,7 +190,9 @@ class SetupCommandTest(unittest.TestCase):
             self.assertTrue(
                 (target / ".github" / "instructions" / "omc.instructions.md").exists()
             )
-            self.assertTrue((skills_root / "omc-copilot-autopilot" / "SKILL.md").exists())
+            self.assertTrue(
+                (skills_root / "omc-copilot-autopilot" / "SKILL.md").exists()
+            )
 
     def test_setup_codex_prints_installed_skill_paths(self) -> None:
         package_root = Path(__file__).resolve().parents[1] / "omc_copilot"

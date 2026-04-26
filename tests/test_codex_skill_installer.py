@@ -6,7 +6,11 @@ from pathlib import Path
 from unittest.mock import patch
 
 from omc_copilot.installer.codex_skill_installer import (
-    CodexSkillInstaller, default_codex_skills_dir, expected_codex_skill_dirs)
+    CODEX_ADAPTATION_MARKER,
+    CodexSkillInstaller,
+    default_codex_skills_dir,
+    expected_codex_skill_dirs,
+)
 
 
 class CodexSkillInstallerTest(unittest.TestCase):
@@ -36,9 +40,7 @@ class CodexSkillInstallerTest(unittest.TestCase):
             second = installer.install(skills_root)
 
             template_count = sum(
-                1
-                for path in installer.templates_root.iterdir()
-                if path.is_dir()
+                1 for path in installer.templates_root.iterdir() if path.is_dir()
             )
             self.assertEqual(len(first.skill_dirs), template_count)
             self.assertEqual(len(second.skill_dirs), template_count)
@@ -55,6 +57,24 @@ class CodexSkillInstallerTest(unittest.TestCase):
                     / "psm.sh"
                 ).exists()
             )
+
+    def test_install_adds_codex_adaptation_to_every_skill(self) -> None:
+        package_root = Path(__file__).resolve().parents[1] / "omc_copilot"
+        with tempfile.TemporaryDirectory() as td:
+            skills_root = Path(td) / "skills"
+
+            result = CodexSkillInstaller(package_root=package_root).install(skills_root)
+
+            for skill_dir in result.skill_dirs:
+                content = (skill_dir / "SKILL.md").read_text(encoding="utf-8")
+                self.assertIn(CODEX_ADAPTATION_MARKER, content)
+                self.assertIn("omc-copilot ... --runtime codex", content)
+                if content.startswith("---\n"):
+                    frontmatter_end = content.find("\n---\n", 4)
+                    self.assertGreater(frontmatter_end, 0)
+                    self.assertGreater(
+                        content.find(CODEX_ADAPTATION_MARKER), frontmatter_end
+                    )
 
 
 if __name__ == "__main__":

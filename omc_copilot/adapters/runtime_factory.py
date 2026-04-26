@@ -25,9 +25,7 @@ def resolve_runtime_name(
         allowed.add("both")
     if normalized not in allowed:
         choices = ", ".join(sorted(allowed))
-        raise ValueError(
-            f"Unsupported runtime `{raw}`. Expected one of: {choices}."
-        )
+        raise ValueError(f"Unsupported runtime `{raw}`. Expected one of: {choices}.")
     return normalized  # type: ignore[return-value]
 
 

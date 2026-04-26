@@ -6,8 +6,10 @@ from unittest.mock import patch
 
 from omc_copilot.adapters.codex_cli import CodexRuntimeAdapter
 from omc_copilot.adapters.copilot_cli import CopilotRuntimeAdapter
-from omc_copilot.adapters.runtime_factory import (build_runtime_adapter,
-                                                  resolve_runtime_name)
+from omc_copilot.adapters.runtime_factory import (
+    build_runtime_adapter,
+    resolve_runtime_name,
+)
 
 
 class RuntimeFactoryTest(unittest.TestCase):

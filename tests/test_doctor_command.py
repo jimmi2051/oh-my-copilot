@@ -9,8 +9,7 @@ from subprocess import CompletedProcess
 from unittest.mock import patch
 
 from omc_copilot.cli.commands.doctor import run_doctor
-from omc_copilot.installer.codex_skill_installer import \
-    expected_codex_skill_dirs
+from omc_copilot.installer.codex_skill_installer import expected_codex_skill_dirs
 from omc_copilot.installer.merge_strategy import END_MARKER, START_MARKER
 
 

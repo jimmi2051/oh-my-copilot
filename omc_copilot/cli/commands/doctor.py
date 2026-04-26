@@ -5,11 +5,12 @@ import shutil
 import subprocess
 from pathlib import Path
 
-from omc_copilot.adapters.runtime_factory import (includes_codex,
-                                                  includes_copilot,
-                                                  resolve_runtime_name)
-from omc_copilot.installer.codex_skill_installer import \
-    expected_codex_skill_dirs
+from omc_copilot.adapters.runtime_factory import (
+    includes_codex,
+    includes_copilot,
+    resolve_runtime_name,
+)
+from omc_copilot.installer.codex_skill_installer import expected_codex_skill_dirs
 from omc_copilot.installer.merge_strategy import END_MARKER, START_MARKER
 
 

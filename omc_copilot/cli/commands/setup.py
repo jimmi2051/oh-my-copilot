@@ -2,9 +2,11 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from omc_copilot.adapters.runtime_factory import (includes_codex,
-                                                  includes_copilot,
-                                                  resolve_runtime_name)
+from omc_copilot.adapters.runtime_factory import (
+    includes_codex,
+    includes_copilot,
+    resolve_runtime_name,
+)
 from omc_copilot.installer.setup_wizard import SetupWizard
 
 PLUGIN_MANIFEST_RELATIVE_PATH = Path("plugins") / "omc-copilot" / "plugin.json"
