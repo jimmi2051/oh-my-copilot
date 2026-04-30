@@ -23,9 +23,9 @@ class CodexSkillInstallerTest(unittest.TestCase):
         paths = expected_codex_skill_dirs(root)
         self.assertIn(root / "omc-copilot-ask", paths)
         self.assertIn(root / "omc-copilot-team", paths)
-        self.assertIn(root / "omc-copilot-claudecode-debug", paths)
-        self.assertIn(root / "omc-copilot-claudecode-writer-memory", paths)
-        self.assertEqual(len(paths), 51)
+        self.assertIn(root / "omc-copilot-ultrawork", paths)
+        self.assertNotIn(root / "omc-copilot-claudecode-debug", paths)
+        self.assertEqual(len(paths), 13)
 
     def test_install_is_idempotent_and_replaces_managed_skill(self) -> None:
         package_root = Path(__file__).resolve().parents[1] / "omc_copilot"
@@ -47,16 +47,6 @@ class CodexSkillInstallerTest(unittest.TestCase):
             self.assertFalse((stale_skill / "stale.txt").exists())
             self.assertTrue((stale_skill / "SKILL.md").exists())
             self.assertTrue((skills_root / "omc-copilot-team" / "SKILL.md").exists())
-            self.assertTrue(
-                (skills_root / "omc-copilot-claudecode-debug" / "SKILL.md").exists()
-            )
-            self.assertTrue(
-                (
-                    skills_root
-                    / "omc-copilot-claudecode-project-session-manager"
-                    / "psm.sh"
-                ).exists()
-            )
 
     def test_install_adds_codex_adaptation_to_every_skill(self) -> None:
         package_root = Path(__file__).resolve().parents[1] / "omc_copilot"
