@@ -21,3 +21,25 @@ def merge_file(path: Path, block: str) -> None:
     merged = merge_block(current, block)
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(merged, encoding="utf-8")
+
+
+def remove_managed_block(existing: str) -> str:
+    if START_MARKER not in existing or END_MARKER not in existing:
+        return existing
+    head, rest = existing.split(START_MARKER, 1)
+    _, tail = rest.split(END_MARKER, 1)
+    return f"{head.rstrip()}\n\n{tail.lstrip()}".strip() + "\n"
+
+
+def remove_managed_block_file(path: Path) -> bool:
+    if not path.exists():
+        return False
+    current = path.read_text(encoding="utf-8")
+    updated = remove_managed_block(current)
+    if updated == current:
+        return False
+    if updated.strip():
+        path.write_text(updated, encoding="utf-8")
+    else:
+        path.unlink()
+    return True

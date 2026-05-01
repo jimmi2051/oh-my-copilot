@@ -85,6 +85,19 @@ def expected_codex_skill_dirs(skills_root: Path | None = None) -> list[Path]:
     ]
 
 
+def uninstall_codex_skills(skills_root: Path | None = None) -> list[Path]:
+    removed: list[Path] = []
+    for skill_dir in expected_codex_skill_dirs(skills_root):
+        if not skill_dir.exists():
+            continue
+        if skill_dir.is_dir() and not skill_dir.is_symlink():
+            shutil.rmtree(skill_dir)
+        else:
+            skill_dir.unlink()
+        removed.append(skill_dir)
+    return removed
+
+
 def _adapt_skill_file_for_codex(skill_file: Path) -> None:
     if not skill_file.exists():
         return

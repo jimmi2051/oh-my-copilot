@@ -8,6 +8,7 @@ from unittest.mock import patch
 from omc_copilot.installer.codex_skill_installer import (
     CODEX_ADAPTATION_MARKER,
     CodexSkillInstaller,
+    uninstall_codex_skills,
     default_codex_skills_dir,
     expected_codex_skill_dirs,
 )
@@ -65,6 +66,23 @@ class CodexSkillInstallerTest(unittest.TestCase):
                     self.assertGreater(
                         content.find(CODEX_ADAPTATION_MARKER), frontmatter_end
                     )
+
+    def test_uninstall_removes_only_expected_codex_skill_dirs(self) -> None:
+        with tempfile.TemporaryDirectory() as td:
+            skills_root = Path(td) / "skills"
+            managed = skills_root / "omc-copilot-ask"
+            unmanaged = skills_root / "omc-copilot-custom"
+            other = skills_root / "other-skill"
+            managed.mkdir(parents=True)
+            unmanaged.mkdir(parents=True)
+            other.mkdir(parents=True)
+
+            removed = uninstall_codex_skills(skills_root)
+
+            self.assertIn(managed, removed)
+            self.assertFalse(managed.exists())
+            self.assertTrue(unmanaged.exists())
+            self.assertTrue(other.exists())
 
 
 if __name__ == "__main__":

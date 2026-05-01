@@ -106,6 +106,7 @@ Runtime writes to:
 ```bash
 omc-copilot run "<task>" [--mode MODE] [--max-iterations N] [--cwd PATH] [--runtime copilot|codex]
 omc-copilot setup [--target PATH] [--plugin-guidance] [--runtime copilot|codex|both] [--codex-skills-dir PATH]
+omc-copilot uninstall [--target PATH] [--runtime copilot|codex|both] [--codex-skills-dir PATH]
 omc-copilot ask "<prompt>" [--cwd PATH] [--runtime copilot|codex]
 omc-copilot team "<task>" [--max-iterations N] [--cwd PATH] [--runtime copilot|codex]
 omc-copilot session search "<query>" [--project-root PATH]
@@ -124,6 +125,7 @@ omc-copilot ask "review this patch for security issues"
 omc-copilot session search "auth" --project-root .
 omc-copilot hud --project-root .
 omc-copilot doctor --project-root .
+omc-copilot uninstall --runtime codex --target .
 ```
 
 Runtime selection:
@@ -132,6 +134,7 @@ Runtime selection:
 - `OMC_RUNTIME=codex` routes `run`, `team`, and `ask` through `codex exec`.
 - The Codex backend uses `codex exec --sandbox read-only -c approval_policy="never" --cd <cwd> <prompt>` so nested runtime calls behave as text-generation calls; make repository edits from the active outer session.
 - `setup --runtime codex` installs Codex-native skills such as `omc.ask`, `omc.team`, and `omc.autopilot` into the Codex skills directory. Start a new Codex session after setup for skill discovery to refresh.
+- `uninstall --runtime codex` removes the managed OMC block from `AGENTS.md`, `.omc/hooks/omc-copilot-hooks.json`, and installed Codex-native OMC skill folders. It does not remove `.omc/state/` or `.omc/artifacts/` history.
 
 `doctor` checks runtime and required assets, including:
 - `plugins/omc-copilot/plugin.json`

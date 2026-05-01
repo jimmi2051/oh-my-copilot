@@ -12,6 +12,7 @@ from omc_copilot.cli.commands.run import run_task
 from omc_copilot.cli.commands.session import run_session_search
 from omc_copilot.cli.commands.setup import run_setup
 from omc_copilot.cli.commands.team import run_team
+from omc_copilot.cli.commands.uninstall import run_uninstall
 from omc_copilot.cli.notify import main as notify_main
 
 BACKEND_RUNTIME_CHOICES = ("copilot", "codex")
@@ -45,6 +46,17 @@ def build_parser() -> argparse.ArgumentParser:
         "--codex-skills-dir",
         default=None,
         help="Override Codex skills install directory (defaults to $CODEX_HOME/skills or ~/.codex/skills)",
+    )
+
+    uninstall_cmd = sub.add_parser(
+        "uninstall", help="Remove OMC setup assets for the selected runtime"
+    )
+    uninstall_cmd.add_argument("--target", default=".")
+    uninstall_cmd.add_argument("--runtime", choices=SETUP_RUNTIME_CHOICES, default=None)
+    uninstall_cmd.add_argument(
+        "--codex-skills-dir",
+        default=None,
+        help="Override Codex skills directory to clean",
     )
 
     ask_cmd = sub.add_parser("ask", help="Ask Copilot directly")
@@ -102,6 +114,16 @@ def main(argv: list[str] | None = None) -> int:
         return run_setup(
             Path(args.target).resolve(),
             plugin_guidance=args.plugin_guidance,
+            runtime_name=args.runtime,
+            codex_skills_dir=(
+                Path(args.codex_skills_dir).expanduser().resolve()
+                if args.codex_skills_dir
+                else None
+            ),
+        )
+    if args.command == "uninstall":
+        return run_uninstall(
+            Path(args.target).resolve(),
             runtime_name=args.runtime,
             codex_skills_dir=(
                 Path(args.codex_skills_dir).expanduser().resolve()
